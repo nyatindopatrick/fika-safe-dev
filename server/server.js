@@ -292,11 +292,19 @@ app.put('/api/saccos/:id', (req, res) => {
 
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
+<<<<<<< HEAD
 mongoose.connect(db, { useNewUrlParser: true })
+=======
+mongoose
+  .connect(db, { useNewUrlParser: true })
+>>>>>>> add-search-button
   .then(() => {
     app.listen(4000, () => {
-      console.log('Listening on port 4000');
+      console.log("Listening on port 4000");
     });
-  }).catch((error) => {
-    console.log({ message: `Unable to establish a connection to the server ${error}` });
+  })
+  .catch(error => {
+    console.log({
+      message: `Unable to establish a connection to the server ${error}`
+    });
   });
