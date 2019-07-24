@@ -8,7 +8,7 @@ import {
   DropdownToggle,
   Media,
 } from 'reactstrap';
-
+import { Link } from 'react-router-dom';
 export default class AdminRow extends Component {
   constructor(props) {
     super(props);
@@ -29,9 +29,9 @@ export default class AdminRow extends Component {
           <th scope="row">
             <Media className="align-items-center">
               <Media>
-                <a href="http://localhost:3001/admin/user-profile">
+                <Link to="/admin/sacco-profile">
                   <span className="mb-0 text-sm">{sacco.name}</span>
-                </a>
+                </Link>
               </Media>
             </Media>
           </th>

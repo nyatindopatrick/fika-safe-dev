@@ -15,13 +15,13 @@ var routes = [
     layout: "/admin"
   },
 
-  {
-    path: "/user-profile",
-    name: "Sacco Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: Profile,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/user-profile",
+  //   name: "Sacco Profile",
+  //   icon: "ni ni-single-02 text-yellow",
+  //   component: Profile,
+  //   layout: "/admin"
+  // },
   {
     path: "/logs",
     name: "Logs",
@@ -29,23 +29,23 @@ var routes = [
     component: Logs,
     layout: "/admin"
   },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
-    layout: "/auth"
-  },
+  // {
+  //   // path: "/login",
+  //   // name: "Login",
+  //   // icon: "ni ni-key-25 text-info",
+  //   // component: Login,
+  //   // layout: "/auth"
+  // },
   {
     path: "/new",
     component: NewSacco,
     layout: "/admin"
   },
-  {
-    path: "/admin-profile",
-    component: AdminProfile,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/admin-profile",
+  //   component: AdminProfile,
+  //   layout: "/admin"
+  // },
 
 ];
 export default routes;

@@ -9,7 +9,7 @@ const mongooseUniqueValidator = require('mongoose-unique-validator');
 
 // SUPER ADMIN SCHEMA
 const UserSchema = new mongoose.Schema({
-  username: String,
+  email: String,
   password: String
 });
 
@@ -26,6 +26,7 @@ UserSchema.pre("save", function (next) {
 UserSchema.methods.comparePassword = function (plaintext, callback) {
   return callback(null, bcrypt.compareSync(plaintext, this.password));
 };
+
 
 
 

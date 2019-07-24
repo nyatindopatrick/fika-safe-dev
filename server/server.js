@@ -2,6 +2,12 @@ const sourceMapSupport = require('source-map-support');
 // import queryString from 'query-String'
 // import { MongoClient } from 'mongodb';
 const mongoose = require('mongoose');
+const secret = 'mysecretsshhh';
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
+// authentication middlware
+const withAuth = require('./middleware');
 
 // mongoose models    .
 const { Sacco, Rider, UserModel } = require('./db.models.js');
@@ -27,6 +33,7 @@ const app = express();
 
 // mounting other middlewares into our server.js
 app.use(express.static('static'));
+app.use(cookieParser());
 
 
 const qpm = require('query-params-mongo');
@@ -53,24 +60,54 @@ app.post("/api/register", async (request, response) => {
     response.status(500).send(error.message);
   }
 });
-
-app.post("/api/login", async (request, response) => {
-  try {
-    const user = await UserModel.findOne({ username: request.body.username }).exec();
-    if (!user) {
-      return response.status(400).send({ message: "The username does not exist" });
-    }
-    user.comparePassword(request.body.password, function (error, match) {
-      if (!match) {
-        return response.status(400).send({ message: "The password is invalid" });
-      }
-    });
-    response.send({ message: "The username and password combination is correct!" });
-  } catch (error) {
-    response.status(500).send(error);
-  }
+// check our token if it is true
+app.get('/checkToken', withAuth, function (req, res) {
+  res.sendStatus(200);
 });
 
+app.post('/api/login', function (req, res) {
+  const { email, password } = req.body;
+  UserModel.findOne({ email }, function (err, user) {
+    if (err) {
+      console.error(err);
+      res.status(500)
+        .json({
+          error: 'Internal error please try again'
+        });
+    } else if (!user) {
+      res.status(401)
+        .json({
+          error: 'Incorrect email or password'
+        });
+    } else {
+      user.comparePassword(password, function (err, same) {
+        if (err) {
+          res.status(500)
+            .json({
+              error: 'Internal error please try again'
+            });
+        } else if (!same) {
+          res.status(401)
+            .json({
+              error: 'Incorrect email or password'
+            });
+        } else {
+          // Issue token
+          const payload = { email };
+          const token = jwt.sign(payload, secret, {
+            expiresIn: '1h'
+          });
+          res.cookie('token', token, { httpOnly: true })
+            .sendStatus(200);
+        }
+      });
+    }
+  });
+});
+
+app.get('/checkToken', withAuth, function (req, res) {
+  res.sendStatus(200);
+});
 
 app.get('/', (req, res) => {
   res.json('this is our first server page');
@@ -184,7 +221,7 @@ app.delete('api/riders/:id', (req, res) => {
 });
 // THIS IS THE SACCOS APIS
 // get all saccos
-app.get('/api/saccos', (req, res) => {
+app.get('/api/saccos', withAuth, (req, res) => {
   const { status, dateLte, dateGte } = req.query // destructuring
   console.log(new Date(dateLte));
   console.log(new Date(dateGte));
@@ -223,7 +260,7 @@ app.get('/api/saccos', (req, res) => {
   }
 
 });
-app.get('/api/saccos/:id', (req, res) => { // parameter
+app.get('/api/saccos/:id', withAuth, (req, res) => { // parameter
   let saccoId;
   try {
     saccoId = req.params.id;
@@ -239,7 +276,7 @@ app.get('/api/saccos/:id', (req, res) => { // parameter
 });
 
 // post api
-app.post('/api/saccos', (req, res) => {
+app.post('/api/saccos', withAuth, (req, res) => {
   const newSacco = new Sacco(req.body);
   newSacco.save().then((addedSacco) => {
     // console.log(addedSacco);
@@ -249,7 +286,7 @@ app.post('/api/saccos', (req, res) => {
   });
 });
 
-app.delete('/api/saccos/:id', (req, res) => {
+app.delete('/api/saccos/:id', withAuth, (req, res) => {
   let saccosId;
   try {
     saccosId = req.params.id;
@@ -266,7 +303,7 @@ app.delete('/api/saccos/:id', (req, res) => {
 });
 
 
-app.put('/api/saccos/:id', (req, res) => {
+app.put('/api/saccos/:id', withAuth, (req, res) => {
   let saccosId;
   console.log(req.params.id);
   try {
@@ -293,7 +330,7 @@ app.put('/api/saccos/:id', (req, res) => {
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
 mongoose
-  .connect(db, { useNewUrlParser: true })
+  .connect('mongodb://localhost/fika-safe', { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
       console.log("Listening on port 4000");
