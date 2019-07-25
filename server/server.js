@@ -292,8 +292,8 @@ app.put('/api/saccos/:id', (req, res) => {
 
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
-const dbURI = 'mongodb+srv://superadmin:superadmin@cluster0-uqgrz.azure.mongodb.net/test?retryWrites=true&w=majority';
-mongoose.connect(dbURI, { useNewUrlParser: true })
+
+mongoose.connect(db, { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
       console.log('Listening on port 4000');
