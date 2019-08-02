@@ -9,7 +9,7 @@ const mongooseUniqueValidator = require('mongoose-unique-validator');
 
 // SUPER ADMIN SCHEMA
 const UserSchema = new mongoose.Schema({
-  username: String,
+  email: String,
   password: String
 });
 
@@ -26,6 +26,7 @@ UserSchema.pre("save", function (next) {
 UserSchema.methods.comparePassword = function (plaintext, callback) {
   return callback(null, bcrypt.compareSync(plaintext, this.password));
 };
+
 
 
 
@@ -70,10 +71,6 @@ const saccoSchema = new mongoose.Schema({
   description: String,
   website: {
     type: String,
-    validate: {
-      validator: link => link.indexOf('www') === 0,
-      message: 'Webpage URL must start with https://',
-    }
   },
   created: {
     type: Date,
