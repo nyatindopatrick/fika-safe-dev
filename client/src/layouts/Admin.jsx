@@ -6,7 +6,7 @@ import { Container } from 'reactstrap';
 import AdminNavbar from 'components/Navbars/AdminNavbar.jsx';
 import AdminFooter from 'components/Footers/AdminFooter.jsx';
 import Sidebar from 'components/Sidebar/Sidebar.jsx';
-import withAuth from 'withAuth.jsx';
+import withAuth from 'withAuth.js';
 
 import routes from 'routes.js';
 

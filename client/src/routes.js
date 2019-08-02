@@ -36,11 +36,11 @@ var routes = [
   //   // component: Login,
   //   // layout: "/auth"
   // },
-  {
-    path: "/new",
-    component: NewSacco,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/new",
+  //   component: NewSacco,
+  //   layout: "/admin"
+  // },
   // {
   //   path: "/admin-profile",
   //   component: AdminProfile,
