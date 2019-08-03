@@ -29,39 +29,6 @@ class Dashboard extends Component {
       this.loadData();
     }
   }
-  // handle any change in the search
-  search = searchQuery => {
-    // Variable to hold the original version of the list
-    let currentList = [];
-    // Variable to hold the filtered list before putting into state
-    let newList = [];
-
-    // If the search bar isn't empty
-    if (searchQuery !== "") {
-      // Assign the original list to currentList
-      currentList = this.state.data;
-      const filter = searchQuery;
-
-      // Use .filter() to determine which items should be displayed
-      // based on the search terms
-      for (var i = 0; i < currentList.length; i++) {
-        for (const key in currentList[i]) {
-          if (
-            currentList[i][key]
-              .toString()
-              .toLowercase()
-              .indexOf(filter) !== -1
-          ) {
-            newList.push(currentList[i]);
-          }
-        }
-      }
-      // Set the filtered state based on what our rules added to newList
-      this.setState({
-        data: newList
-      });
-    }
-  };
 
   // loading the state with data
   loadData() {
@@ -91,7 +58,7 @@ class Dashboard extends Component {
         <div className="main-content" ref="mainContent">
           <Navbar />
           <Header data={this.state.data} />
-          <AdminHome search={this.search} data={this.state.data} />
+          <AdminHome                                                                                                                                                                                                                    />
           <Container fluid>
             <Footer />
           </Container>
