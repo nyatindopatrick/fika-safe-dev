@@ -25,8 +25,10 @@ class TableWhite extends React.Component {
     super();
     this.state = {
       data: [],
+      data1: [],
       sortBy: "name",
       searchQuery: "",
+      space:' ',
       query: { status: "" }
     };
   }
@@ -36,11 +38,11 @@ class TableWhite extends React.Component {
     this.loadData();
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      this.loadData();
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.location !== prevProps.location) {
+  //     this.loadData();
+  //   }
+  // }
 
   setFilter(query) {
     // very important to stringify the data
@@ -61,8 +63,9 @@ class TableWhite extends React.Component {
     this.setState({
       searchQuery: event.target.value
     });
-    this.props.search(this.state.searchQuery);
-    console.log(this.state.searchQuery);
+    // this.loadData();
+    this.search(event.target.value);
+    // console.log(this.state.searchQuery);
   };
 
   // handles tchages in the status inputs
@@ -80,12 +83,61 @@ class TableWhite extends React.Component {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        this.setState({ data });
+        this.setState({
+          data: data,
+          data1: data
+        });
       })
       .catch(err => {
         console.log(err);
       });
   }
+
+  // handle any change in the search
+  search = searchQuery => {
+    // Variable to hold the original version of the list
+    let currentList = [];
+    // Variable to hold the filtered list before putting into state
+    let newList = [];
+
+    // If the search bar isn't empty
+    if (searchQuery.length > 0) {
+      // this.loadData();
+      currentList = this.state.data1;
+      // Assign the original list to currentList
+      // currentList = this.state.data;
+      const filter = searchQuery.trim();
+
+      // Use .filter() to determine which items should be displayed
+      // based on the search terms
+      for (var i = 0; i < currentList.length; i++) {
+        for (let keys in currentList[i]) {
+          if (
+            currentList[i][keys].toString().indexOf(filter) !== -1 &&
+            !newList.includes(currentList[i])
+          ) {
+            newList.push(currentList[i]);
+          }
+        }
+      }
+
+      // Set the filtered state based on what our rules added to newList
+      if (newList !== []) {
+        this.setState({
+          data: newList
+        });
+      }
+    } else if (searchQuery.length < 1 && searchQuery === "") {
+      this.setState({
+        data: currentList
+      });
+    } else {
+      this.setState({
+        data: currentList
+      });
+    }
+    // console.log(newList);
+  };
 
   render() {
     console.log(this.state.searchQuery);
@@ -116,8 +168,9 @@ class TableWhite extends React.Component {
             <input
               className="form-control form-control-sm ml-3 w-75"
               type="text"
-              value={this.state.searchQuery}
-              onChange={() => this.handleSearchChange}
+              name="searchQuery"
+              onChange={this.handleSearchChange}
+              value={`${this.state.space}${this.state.searchQuery}`}
               placeholder="Search"
               aria-label="Search"
             />
