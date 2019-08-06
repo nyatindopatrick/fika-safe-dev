@@ -133,9 +133,9 @@ const riderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    bikeOwnerTelNumber:{
+    bikeOwnerTelNumber: {
       type: String,
-      required: true
+      required: true,
     },
     address: {
       type: String,
@@ -150,22 +150,21 @@ const riderSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    insurance: {
-      number: {
-        type: String,
-        // required: true,
-        unique: true,
-      },
-      issue_date: {
-        type: Date,
-        required: true,
-        // default: new Date(),
-      },
-      exp_date: {
-        type: Date,
-        required: true,
-        // default: new Date(),
-      },
+
+    insuranceNumber: {
+      type: String,
+      // required: true,
+      unique: true,
+    },
+    insuranceIssueDate: {
+      type: Date,
+      required: true,
+      // default: new Date(),
+    },
+    insuranceExpDate: {
+      type: Date,
+      required: true,
+      // default: new Date(),
     },
     // revisit
     passport_ID: {
