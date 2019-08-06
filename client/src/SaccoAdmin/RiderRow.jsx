@@ -81,16 +81,23 @@ export default class RiderRow extends Component {
               <UncontrolledDropdown>
                 <DropdownToggle
                   className="btn-icon-only text-light"
-                  href="#pablo"
+                  // href={{ pathname: `sacco/rider-profile/${rider._id}` }}
                   role="button"
                   size="sm"
                   color=""
+                  onClick={e => e.preventDefault()}
                 >
                   <i className="fas fa-ellipsis-v" />
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-arrow" right>
-                  <DropdownItem href="#pablo">Edit</DropdownItem>
-                  <DropdownItem href="#pablo">Deactivate</DropdownItem>
+                  <DropdownItem onClick={e => e.preventDefault()}>
+                    <Link to={{ pathname: `rider-profile/${rider._id}` }}>
+                      Edit
+                    </Link>
+                  </DropdownItem>
+                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                    Deactivate
+                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </th>
