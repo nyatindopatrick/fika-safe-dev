@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import Image from "react-bootstrap/Image";
+import ProfileImage from "./imageupload.jsx";
 // reactstrap components
 
 import {
@@ -60,7 +62,7 @@ class Profile extends React.Component {
   // onDeactivate:
   onDeactivate() {
     this.setState({ red: !this.state.red });
-    this.setState({ name: !this.state.name });
+    this.setState({ name: !this.state.rider.status });
   }
 
   // load Data for a specific sacc
@@ -116,6 +118,7 @@ class Profile extends React.Component {
                   style={{ background: "#e4f0f7" }}
                   className="pt-0 pt-md-4"
                 >
+                  <ProfileImage />
                   <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
