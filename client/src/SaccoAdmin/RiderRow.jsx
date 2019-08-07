@@ -45,7 +45,7 @@ export default class RiderRow extends Component {
                 <Media>
                   <a href="/admin/sacco-profile">
                     <span style={{ color: "#5dd143" }} className="mb-0 text-sm">
-                      {`${rider.first_name} ${rider.sur_name} ${rider.last_name}`}
+                      {`${rider.riderFname} ${rider.riderSurName} ${rider.riderLname}`}
                     </span>
                   </a>
                 </Media>
@@ -67,13 +67,13 @@ export default class RiderRow extends Component {
             </th>
             <th>
               <span style={{ color: "white" }} className="mb-0 text-sm">
-                {rider.telephone_number}
+                {rider.riderTelNumber}
               </span>
             </th>
             <th>
               <div className="d-flex align-items-center">
                 <span style={{ color: "white" }} className="mb-0 text-sm">
-                  {rider.passport_ID}
+                  {rider.riderID}
                 </span>
               </div>
             </th>
