@@ -1,16 +1,53 @@
 const mongoose = require('mongoose');
-const secret = 'mysecretsshhh';
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const exjwt = require('express-jwt');
 const express = require('express');
+require('dotenv').config();
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+const app = express();
+const logger = require('morgan');
+const router = express.Router();
+// const port = process.env.PORT || 4040;
+app.use(logger('dev'))
+app.use("/uploads", express.static('uploads'));
+
+//setting image storage route
+const uploads = 'uploads/';
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+
+//filter image files
+const fileFilter = (req, file, cb) => {
+  // reject a file
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 9
+  },
+  fileFilter: fileFilter
+});
+
 
 // authentication middlware
 // const jwtMW = require('./middleware');
-const app = express();
+
 
 /*========= Here we want to let the server know that we should expect and allow a header with the content-type of 'Authorization' ============*/
 app.use((req, res, next) => {
@@ -52,9 +89,94 @@ app.post('/api/register', async (request, response) => {
   }
 });
 // check our token if it is true
-app.get('/checkToken', jwtMW, function(req, res) {
+app.get('/checkToken', jwtMW, function (req, res) {
   res.sendStatus(200);
 });
+
+//Africastalking SMS
+app.post('/sms', (req, res) => {
+  let { sessionId, serviceCode, from, text } = req.body
+  let phoneNumber = from;
+
+  const credentials = {
+    apiKey: "20de56d5d877dc42849aba87d296b0ad78ed2fa804231c162687ee7fe60c6b70",
+    username: 'nyatindopatrick',
+    from: '65456'
+  }
+
+  // Initialize the SDK
+  const AfricasTalking = require('africastalking')(credentials);
+
+  // Get the SMS service
+  const sms = AfricasTalking.SMS;
+
+  function sendMessage(client_phone_number, sms_message) {
+    const options = {
+      // Set the numbers you want to send to in international format
+      to: client_phone_number,
+      // Set your message
+      message: sms_message,
+      // Set your shortCode or senderId
+      // from: "65456"
+    }
+
+    sms.send(options)
+      .then(console.log)
+      .catch(console.log);
+  }
+
+
+  let client_phone_number = phoneNumber;
+  let sms_message;
+
+
+  console.log(`sms received`);
+  Rider.findOne({ numberPlate: text }).exec().then((result) => {
+    if (result) {
+      let rider = result;
+      try {
+        saccoId = result.sacco;
+        console.log(saccoId);
+      } catch (error) {
+        res.json({ message: `Invalid sacco id ${error}` });
+      }
+      // let riderSacco;
+      // searching for the specific sacco registered to the riders
+      // Sacco.findById({ _id: saccoId }).then((sacco) => {
+      //   console.log(sacco);
+      //   riderSacco = sacco;
+      // }).catch(err => {
+      //   console.log(err);
+      // })
+      sms_message =
+        `
+            Name: ${rider.riderFname} ${rider.riderSurName} ${rider.riderLname},
+            Plate Number: ${rider.numberPlate},
+            sacco: ,
+            Sacco Leader:  ,
+            Motorbike Make: ${rider.motorBikeMake},
+            Sacco Code:,
+            Motorbike Owner: ${rider.bikeOwnerFname} ${rider.bikeOwnerLname},
+            Rider's Contact:${rider.riderTelNumber},
+            Sacco Contact:`;
+
+      sendMessage(client_phone_number, sms_message);
+    } else {
+      sms_message = `The rider is not registered.`
+      sendMessage(client_phone_number, sms_message);
+    }
+  })
+    .catch(err => {
+      res.status(500).send({ message: `internal server error:${err}` });
+      sms_message = `Nothing to send`;
+      console.log("unable to send SMS - exception");
+    });
+
+  res.status(200).send('OK');
+
+});
+
+
 
 // admin login endpoint
 app.post('/api/login', (req, res) => {
@@ -66,7 +188,7 @@ app.post('/api/login', (req, res) => {
     if (user === null) {
       res.json(false);
     }
-    bcrypt.compare(password, user.password, function(err, result) {
+    bcrypt.compare(password, user.password, function (err, result) {
       if (result === true) {
         console.log('Valid!');
         let token = jwt.sign({ email: user.email }, 'keyboard cat 4 ever', {
@@ -102,18 +224,38 @@ app.get('/', (req, res) => {
   res.json('this is our first server page');
 });
 
-app.post('/api/riders', (req, res) => {
-  // if (req.body.insurance.issue_date)
-  //   req.body.insuranceIssueDate = new Date(req.body.insuranceIssueDate);
-  const newRider = new Rider(req.body);
-  newRider
+
+// ...req.body,
+// riderPassportPhoto: req.file.path,
+
+
+
+app.post("/api/riders", upload.single('riderPassportPhoto'), (req, res, next) => {
+  const riders = new Rider({
+    riderPassportPhoto: req.file.path,
+    ...req.body
+  })
+  riders
     .save()
-    .then(rider => {
-      console.log({ message: 'The rider was added successfully' });
-      res.status(200).json({ rider });
+    .then(result => {
+      console.log(result);
+      res.status(201).json({
+        message: "Registered Rider successfully",
+        createdProduct: {
+          riderFname: result.riderFname,
+            _id: result._id,
+            request: {
+                type: 'GET',
+                url: "http://localhost:3000/riders/" + result._id
+            }
+        }
+      });
     })
-    .catch(error => {
-      res.status(400).send({ message: `Unable to add the rider: ${error}` });
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
     });
 });
 
@@ -136,6 +278,7 @@ app.get('/api/riders/:id', (req, res) => {
   let ridersId;
   try {
     ridersId = new ObjectId(req.params.id);
+    
   } catch (error) {
     res.status(400).send({ message: `Invalid riders ID:${ridersId}` });
   }
@@ -144,6 +287,7 @@ app.get('/api/riders/:id', (req, res) => {
       if (!rider)
         res.status(404).json({ message: `No such Rider: ${ridersId}` });
       else res.json(rider);
+      console.log(rider.riderPassportPhoto);
     })
     .catch(error => {
       console.log(error);
@@ -295,8 +439,8 @@ app.post('/api/saccos', (req, res) => {
         // the accoutn that will be sending the mails
         let transporter = nodemailer.createTransport({
           host: 'stmp.gmail.com',
-          port:465,
-          secure:false,
+          port: 465,
+          secure: false,
           service: 'gmail',
           auth: {
             user: '#######@gmail.com',
@@ -344,6 +488,23 @@ app.delete('/api/saccos/:id', jwtMW, (req, res) => {
     });
 });
 
+
+app.post('/sms', (req, res) => {
+  console.log(req.body);
+  const newRider = new Rider(req.body);
+  // if (!new_sacco._id) new_sacco._id = Schema.Types.ObjectId;
+  newRider.save()
+    .then((sacco) => {
+      console.log({ message: 'The sacco was added successfully' });
+      res.status(200).json({ sacco });
+    })
+    .catch((err) => {
+      res.status(400).send({ message: `Unable to add the sacco: ${err}` });
+    });
+});
+
+
+
 app.put('/api/saccos/:id', (req, res) => {
   let saccosId;
   console.log(req.params.id);
@@ -374,7 +535,7 @@ app.put('/api/saccos/:id', (req, res) => {
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
 mongoose
-  .connect('mongodb://localhost/fika-safe', { useNewUrlParser: true })
+  .connect('mongodb+srv://nyatindopatrick:dogobigy97@riders-ecfkm.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
       console.log('Listening on port 4000');

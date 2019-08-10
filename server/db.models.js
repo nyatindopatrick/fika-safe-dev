@@ -131,7 +131,7 @@ const riderSchema = new mongoose.Schema(
       required: true
     },
     riderPassportPhoto: {
-      type: Buffer,
+      type: String,
       required: false,
     },
     riderID: {
@@ -227,6 +227,9 @@ const riderSchema = new mongoose.Schema(
   },
   { strict: false }
 );
+
+
+
 // USING PLUGINS T
 saccoSchema.plugin(mongooseUniqueValidator);
 riderSchema.plugin(mongooseUniqueValidator);
