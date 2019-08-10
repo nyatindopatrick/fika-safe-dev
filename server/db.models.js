@@ -48,11 +48,6 @@ const saccoSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    email: {
-      type: String,
-      required: true,
-      index: { unique: true },
-    },
 
     telephone_number: {
       type: String,
@@ -89,12 +84,30 @@ const saccoSchema = new mongoose.Schema(
       type: String,
       default: 'Active',
     },
+    email: {
+      type: String,
+      required: true,
+      index: { unique: true },
+    },
     // username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     // ....
   },
   { strict: false }
 );
+
+saccoSchema .pre('save', function(next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  this.password = bcrypt.hashSync(this.password, 10);
+  next();
+});
+
+// compare passwords
+saccoSchema .methods.comparePassword = function(plaintext, callback) {
+  return callback(null, bcrypt.compareSync(plaintext, this.password));
+};
 
 // RIDER SCHEMA
 const riderSchema = new mongoose.Schema(
