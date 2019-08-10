@@ -304,7 +304,7 @@ app.get('/api/riders/email/:email', (req, res) => {
     .populate({
       path: 'sacco',
       match: { email: email },
-      select: 'name -_id',
+      select: ['uniqueSaccoCode -_id']
     })
     .then(rider => {
       if (!rider)
