@@ -101,8 +101,8 @@ app.post('/sms', (req, res) => {
 
   const credentials = {
     apiKey: API_KEY,
-    username: 'nyatindopatrick',
-    from: '65456'
+    username: 'loopedin',
+    from: '22384'
   }
 
   // Initialize the SDK
@@ -118,7 +118,7 @@ app.post('/sms', (req, res) => {
       // Set your message
       message: sms_message,
       // Set your shortCode or senderId
-      // from: "65456"
+      from: "LakeHub"
     }
 
     sms.send(options)
