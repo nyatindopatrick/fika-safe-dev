@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import Image from "react-bootstrap/Image";
 import ProfileImage from "./imageupload.jsx";
+import AvatarEditor from "react-avatar-editor";
 // reactstrap components
 
 import {
@@ -72,39 +72,54 @@ class Profile extends React.Component {
     //const { name,id} = this.props;
     console.log(this.props.rider);
     const {
+      riderFname,
+      riderSurName,
+      riderLname,
+      riderTelNumber,
+      riderID,
+      riderResidence,
+      riderPassportPhoto,
+      riderBase,
+      drivingLicense,
+      DLIssueDate,
+      DLExpDate,
+
+      bikeOwnerFname,
+      bikeOwnerLname,
+      bikeOwnerResidence,
+      bikeOwnerID,
+      bikeOwnerTelNumber,
+
+      motorBikeMake,
+      motorBikeBrand,
       insuranceNumber,
       insuranceIssueDate,
       insuranceExpDate,
-      bikeOwnerResidence,
+      numberPlate,
+
       created,
       status,
       _id,
-      first_name,
-      sur_name,
-      last_name,
-      telephone_number,
-      bikeOwner_fname,
-      bikeOwner_lname,
-      motorBikeMake,
-      bikeMake,
-      bikeBrand,
-      bikeOwner_ID,
-      bikeOwnerTelNumber,
-      areaOfResidence,
-      DLIssueDate,
-      DLExpDate,
-      Base,
-      license_number,
-      passport_ID,
-      number_plate,
-      drivingLicense,
       ratings,
       sacco
     } = this.props.rider;
-    //console.log(id);
+    console.log(this.props)
+    console.log(riderPassportPhoto);
+    const pic = riderPassportPhoto;
+    const imagePreview = (
+      <div
+        className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+        style={{
+          minHeight: "400px",
+          backgroundImage: `url(/${pic})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center top"
+        }}
+      ></div>
+    );
     return (
       <>
-        <UserHeader name={`${first_name} ${last_name}`} />
+        <UserHeader name={`${riderFname} ${riderLname}`} />
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -118,10 +133,12 @@ class Profile extends React.Component {
                   style={{ background: "#e4f0f7" }}
                   className="pt-0 pt-md-4"
                 >
-                  <ProfileImage />
+                  <div>{imagePreview}</div>
+                  {/* <ProfileImage /> */}
                   <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
+                        {/* <AvatarEditor image={riderPassportPhoto} /> */}
                         <div>
                           <span className="heading">{`${ratings} star`}</span>
                           <span className="description">Rider's Rating</span>
@@ -136,7 +153,7 @@ class Profile extends React.Component {
                     </h3>
                     <div className="h5 font-weight-300">
                       <i className="ni location_pin mr-2" />
-                      {Base}, {areaOfResidence}
+                      {riderBase}, {riderResidence}
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni business_briefcase-24 mr-2" />
@@ -144,11 +161,11 @@ class Profile extends React.Component {
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni business_briefcase-24 mr-2" />
-                      Number Plate: {number_plate}
+                      Number Plate: {numberPlate}
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni education_hat mr-2" />
-                      License Number: {license_number}
+                      License Number: {drivingLicense}
                     </div>
                     <hr className="my-4" />
                     <p>{`Insurance number  expires in ${moment(
@@ -188,7 +205,7 @@ class Profile extends React.Component {
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="6">
+                        <Col lg="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -198,15 +215,15 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={first_name}
+                              value={riderFname}
                               onChange={this.handleChange}
-                              name="first_name"
+                              name="riderFname"
                               placeholder="Sacco Name"
                               type="text"
                             />
                           </FormGroup>
                         </Col>
-                        <Col lg="6">
+                        <Col lg="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -216,15 +233,15 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={sur_name}
+                              value={riderSurName}
                               onChange={this.handleChange}
-                              name="sur_name"
+                              name="riderSurName"
                               placeholder="Sacco Name"
                               type="text"
                             />
                           </FormGroup>
                         </Col>
-                        <Col lg="6">
+                        <Col lg="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -234,11 +251,31 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={last_name}
+                              value={riderLname}
                               onChange={this.handleChange}
-                              name="last_name"
+                              name="riderLname"
                               placeholder="Sacco Name"
                               type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-email"
+                            >
+                              Telephone Number:
+                            </label>
+                            <Input
+                              value={riderTelNumber}
+                              name="riderTelNumber"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              id="input-email"
+                              placeholder="Enter telephone number"
+                              type="email"
                             />
                           </FormGroup>
                         </Col>
@@ -252,12 +289,12 @@ class Profile extends React.Component {
                               Passport/ID Number:
                             </label>
                             <Input
-                              value={passport_ID}
-                              name="passport_ID"
+                              value={riderID}
+                              name="riderID"
                               onChange={this.handleChange}
                               className="form-control-alternative"
                               id="input-email"
-                              placeholder="Enter email"
+                              placeholder="Enter ID number"
                               type="email"
                             />
                           </FormGroup>
@@ -292,7 +329,7 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={DLIssueDate}
+                              value={moment(DLIssueDate).format("MM-DD-YYYY")}
                               name="DLIssueDate"
                               onChange={this.handleChange}
                               placeholder="Issue date"
@@ -310,7 +347,7 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={DLExpDate}
+                              value={moment(DLExpDate).format("MM-DD-YYYY")}
                               name="DLExpDate"
                               onChange={this.handleChange}
                               placeholder="Exp date"
@@ -328,10 +365,10 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={areaOfResidence}
-                              name="areaOfResidence"
+                              value={riderResidence}
+                              name="riderResidence"
                               onChange={this.handleChange}
-                              placeholder="Year founded"
+                              placeholder="Area of Residence"
                               type="text"
                             />
                           </FormGroup>
@@ -346,8 +383,8 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={Base}
-                              name="Base"
+                              value={riderBase}
+                              name="riderBase"
                               onChange={this.handleChange}
                               placeholder="Base"
                               type="text"
@@ -372,8 +409,8 @@ class Profile extends React.Component {
                               First Name:
                             </label>
                             <Input
-                              value={bikeOwner_fname}
-                              name="bikeOwner_fname"
+                              value={bikeOwnerFname}
+                              name="bikeOwnerFname"
                               onChange={this.handleChange}
                               className="form-control-alternative"
                               placeholder="Enter first name"
@@ -390,8 +427,8 @@ class Profile extends React.Component {
                               Last Name:
                             </label>
                             <Input
-                              value={bikeOwner_lname}
-                              name="bikeOwner_lname"
+                              value={bikeOwnerLname}
+                              name="bikeOwnerLname"
                               onChange={this.handleChange}
                               className="form-control-alternative"
                               placeholder="Enter last name"
@@ -429,8 +466,8 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={bikeOwner_ID}
-                              name="bikeOwner_Id"
+                              value={bikeOwnerID}
+                              name="bikeOwnerID"
                               onChange={this.handleChange}
                               placeholder="passport/ID"
                               type="number"
@@ -473,8 +510,8 @@ class Profile extends React.Component {
                               Brand:
                             </label>
                             <Input
-                              value={bikeBrand}
-                              name="bikeBrand"
+                              value={motorBikeBrand}
+                              name="motorBikeBrand"
                               onChange={this.handleChange}
                               className="form-control-alternative"
                               placeholder="eg Boxer"
@@ -491,8 +528,8 @@ class Profile extends React.Component {
                               Make:
                             </label>
                             <Input
-                              value={bikeMake}
-                              name="bikeMake"
+                              value={motorBikeMake}
+                              name="motorBikeMake"
                               onChange={this.handleChange}
                               className="form-control-alternative"
                               placeholder="eg BM-100"
@@ -509,8 +546,8 @@ class Profile extends React.Component {
                               Number Plate:
                             </label>
                             <Input
-                              value={number_plate}
-                              name="number_plate"
+                              value={numberPlate}
+                              name="numberPlate"
                               onChange={this.handleChange}
                               className="form-control-alternative"
                               placeholder="Enter plate number"

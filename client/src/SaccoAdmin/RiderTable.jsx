@@ -51,6 +51,7 @@ export default class AdminTable extends Component {
 
   sortBy2(key) {
     let arrayCopy = [...this.state.data];
+    console.log(this.state.data);
     arrayCopy.sort(this.compareBy2(key));
     this.setState({ data: arrayCopy });
   }
@@ -61,6 +62,7 @@ export default class AdminTable extends Component {
     const rows = this.state.data.map(rowData => (
       <RiderRow key={rowData._id} data={rowData} />
     ));
+    
     return (
       <Table className="align-items-center table-flush" responsive>
         <thead className="thead-light">

@@ -39,7 +39,7 @@ class UserHeader extends React.Component {
           {/* Header container */}
           <Container className="d-flex align-items-center" fluid>
             <Row>
-              <Col lg="7" md="10">
+              <Col lg="12" md="12">
                 <h1 className="display-2 text-white">{this.props.name}</h1>
               </Col>
             </Row>
