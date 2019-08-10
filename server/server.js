@@ -89,6 +89,38 @@ app.post('/api/login', (req, res) => {
   });
 });
 
+app.post('/api/sacco/login', (req, res) => {
+  const { email, password } = req.body;
+  console.log('User submitted: ', email, password);
+
+  Sacco.findOne({ email: email }).then(user => {
+    console.log('User Found: ', user);
+    if (user === null) {
+      res.json(false);
+    }
+    bcrypt.compare(password, user.password, function(err, result) {
+      if (result === true) {
+        console.log('Valid!');
+        let token = jwt.sign({ email: user.email }, 'keyboard cat 4 ever', {
+          expiresIn: 129600,
+        }); // Signing the token
+        res.json({
+          sucess: true,
+          err: null,
+          token,
+        });
+      } else {
+        console.log('Entered Password and Hash do not match!');
+        res.status(401).json({
+          sucess: false,
+          token: null,
+          err: 'Entered Password and Hash do not match!',
+        });
+      }
+    });
+  });
+});
+
 app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
   console.log('Web Token Checked.');
   res.send('You are authenticated'); //Sending some response when authenticated
@@ -118,12 +150,29 @@ app.post('/api/riders', (req, res) => {
 });
 
 /* GET ALL RIDERS */
-app.get('/api/riders', (req, res) => {
+app.get('/api/riders/email/:email', (req, res) => {
+  let email;
+  try {
+    email = req.params.email;
+  } catch (error) {
+    res.status(400).send({ message: `Invalid email:${email}` });
+  }
   Rider.find()
+    .populate({
+      path: 'sacco',
+      match: { email: email },
+      select: 'name -_id',
+    })
     .then(rider => {
       if (!rider)
         res.status(404).json({ message: 'No avilable Riders in the system' });
-      else res.json(rider);
+      else {
+        console.log(rider);
+        saccoData = [];
+        // ensures that the data is sacco Specific
+        rider.map(item => (item.sacco !== null ? saccoData.push(item) : false));
+        res.json(saccoData);
+      }
     })
     .catch(error => {
       console.log(error);
@@ -132,10 +181,11 @@ app.get('/api/riders', (req, res) => {
 });
 
 /* GET SINGLE RIDER BY ID */
-app.get('/api/riders/:id', (req, res) => {
+app.get('/api/riders/id/:id', (req, res) => {
   let ridersId;
   try {
     ridersId = new ObjectId(req.params.id);
+    console.log(` this is the id ${ridersId}`);
   } catch (error) {
     res.status(400).send({ message: `Invalid riders ID:${ridersId}` });
   }
@@ -284,40 +334,40 @@ app.post('/api/saccos', (req, res) => {
       console.log({ message: 'The sacco was added successfully' });
 
       // creating a nodemailer test account
-      nodemailer.createTestAccount((err, account) => {
-        const htmlEmail = `
-<h3>Login Details</h3>
-<ul>
-<li>email:${email}</li>
-<li>password:${password}</li>
-</ul>
-`;
-        // the accoutn that will be sending the mails
-        let transporter = nodemailer.createTransport({
-          host: 'stmp.gmail.com',
-          port:465,
-          secure:false,
-          service: 'gmail',
-          auth: {
-            user: '#######@gmail.com',
-            pass: '#######',
-          },
-        });
+      //       nodemailer.createTestAccount((err, account) => {
+      //         const htmlEmail = `
+      // <h3>Login Details</h3>
+      // <ul>
+      // <li>email:${email}</li>
+      // <li>password:${password}</li>
+      // </ul>
+      // `;
+      //         // the accoutn that will be sending the mails
+      //         let transporter = nodemailer.createTransport({
+      //           host: 'stmp.gmail.com',
+      //           port:465,
+      //           secure:false,
+      //           service: 'gmail',
+      //           auth: {
+      //             user: '#######@gmail.com',
+      //             pass: '#######',
+      //           },
+      //         });
 
-        // mail options
-        let mailOptions = {
-          from: `#######@gmail.com`,
-          to: email,
-          subject: 'Fika-Safe',
-          html: htmlEmail,
-        };
+      //         // mail options
+      //         let mailOptions = {
+      //           from: `#######@gmail.com`,
+      //           to: email,
+      //           subject: 'Fika-Safe',
+      //           html: htmlEmail,
+      //         };
 
-        // initiating the nodemailer sending options
-        transporter.sendMail(mailOptions, (err, info) => {
-          if (err) throw err;
-          console.log(info);
-        });
-      });
+      //         // initiating the nodemailer sending options
+      //         transporter.sendMail(mailOptions, (err, info) => {
+      //           if (err) throw err;
+      //           console.log(info);
+      //         });
+      //       });
 
       res.status(200).json({ sacco });
     })
