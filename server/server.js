@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const exjwt = require('express-jwt');
 const express = require('express');
-require('dotenv').config();
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -11,6 +10,8 @@ const nodemailer = require('nodemailer');
 const app = express();
 const logger = require('morgan');
 const router = express.Router();
+const {API_KEY2, API_KEY, port} = require('../config.js');
+
 // const port = process.env.PORT || 4040;
 app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
@@ -99,7 +100,7 @@ app.post('/sms', (req, res) => {
   let phoneNumber = from;
 
   const credentials = {
-    apiKey: "20de56d5d877dc42849aba87d296b0ad78ed2fa804231c162687ee7fe60c6b70",
+    apiKey: API_KEY,
     username: 'nyatindopatrick',
     from: '65456'
   }
@@ -327,11 +328,7 @@ app.get('/api/riders/id/:id', (req, res) => {
   let ridersId;
   try {
     ridersId = new ObjectId(req.params.id);
-<<<<<<< HEAD
-    
-=======
     console.log(` this is the id ${ridersId}`);
->>>>>>> 781c81a021a612884fbc9f77739c04c6cd26618f
   } catch (error) {
     res.status(400).send({ message: `Invalid riders ID:${ridersId}` });
   }
@@ -481,42 +478,6 @@ app.post('/api/saccos', (req, res) => {
       console.log({ message: 'The sacco was added successfully' });
 
       // creating a nodemailer test account
-<<<<<<< HEAD
-      nodemailer.createTestAccount((err, account) => {
-        const htmlEmail = `
-<h3>Login Details</h3>
-<ul>
-<li>email:${email}</li>
-<li>password:${password}</li>
-</ul>
-`;
-        // the accoutn that will be sending the mails
-        let transporter = nodemailer.createTransport({
-          host: 'stmp.gmail.com',
-          port: 465,
-          secure: false,
-          service: 'gmail',
-          auth: {
-            user: '#######@gmail.com',
-            pass: '#######',
-          },
-        });
-
-        // mail options
-        let mailOptions = {
-          from: `#######@gmail.com`,
-          to: email,
-          subject: 'Fika-Safe',
-          html: htmlEmail,
-        };
-
-        // initiating the nodemailer sending options
-        transporter.sendMail(mailOptions, (err, info) => {
-          if (err) throw err;
-          console.log(info);
-        });
-      });
-=======
       //       nodemailer.createTestAccount((err, account) => {
       //         const htmlEmail = `
       // <h3>Login Details</h3>
@@ -551,7 +512,6 @@ app.post('/api/saccos', (req, res) => {
       //           console.log(info);
       //         });
       //       });
->>>>>>> 781c81a021a612884fbc9f77739c04c6cd26618f
 
       res.status(200).json({ sacco });
     })
@@ -625,7 +585,7 @@ app.put('/api/saccos/:id', (req, res) => {
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
 mongoose
-  .connect('mongodb+srv://nyatindopatrick:dogobigy97@riders-ecfkm.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true })
+  .connect(API_KEY2, { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
       console.log('Listening on port 4000');
