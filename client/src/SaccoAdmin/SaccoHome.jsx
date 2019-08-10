@@ -141,7 +141,7 @@ class TableWhite extends React.Component {
     console.log(this.state.searchQuery);
     const { data } = this.state;
     const { status } = this.state.query;
-    console.log(this.props);
+    console.log(this.props.data);
     return (
       <div>
         <Link to="/admin/new-sacco">

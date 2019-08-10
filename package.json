@@ -6,13 +6,13 @@
   "scripts": {
     "format": "prettier --write --single-quote --no-semi --print-width=120 --tab-width=2 \"src/**/*.{js,jsx} \"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -w server server/server.js server.js",
+    "start": "nodemon -w server server/server.js server.js sms.js",
     "babel": "babel server.js --out-dir dist --source-maps",
     "babel-watch": "babel server.js --out-dir dist --source-maps --watch",
     "compile-server": "babel server --presets @babel/preset-env --out-dir dist --source-maps",
     "server": "nodemon -w server server/server.js server.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run sms.js\"",
     "watch-server": "babel server --presets @babel/preset-env --out-dir dist --source-maps --watch",
     "compile": "webpack",
     "build-watch": "webpack --watch",
@@ -41,11 +41,12 @@
   },
   "homepage": "https://github.com/Cyrus-Kiprop/fika-safe#readme",
   "dependencies": {
+    "africastalking": "^0.4.0",
     "bcrypt": "3.0.6",
     "body-parser": "1.19.0",
     "bootstrap-daterangepicker": "^3.0.5",
-    "concurrently": "4.1.1",
     "cookie-parser": "1.4.4",
+    "dotenv": "^8.0.0",
     "error-stack-parser": "2.0.2",
     "eval": "0.1.4",
     "express": "^4.17.0",
@@ -61,6 +62,7 @@
     "mongodb": "^3.2.6",
     "mongoose": "5.6.2",
     "mongoose-unique-validator": "2.0.3",
+    "multer": "^1.4.2",
     "nodemailer": "6.3.0",
     "prop-types": "^15.7.2",
     "query-params-mongo": "1.1.0",
@@ -76,6 +78,7 @@
     "yup": "^0.27.0"
   },
   "devDependencies": {
+    "concurrently": "^4.1.1",
     "husky": "3.0.2",
     "nodemon": "1.19.1"
   }

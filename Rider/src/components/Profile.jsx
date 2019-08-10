@@ -101,6 +101,18 @@ class Profile extends React.Component {
       sacco,
     } = this.props.rider;
     //console.log(id);
+    const pic = riderPassportPhoto;
+    const imagePreview = (
+      <div
+        className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+        style={{
+          minHeight: "400px",
+          backgroundImage: `url(/${pic})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center top"
+        }}
+      ></div>
+      );
     return (
       <>
         <UserHeader name={`${riderFname} ${riderLname}`} />
@@ -117,6 +129,7 @@ class Profile extends React.Component {
                   style={{ background: '#e4f0f7' }}
                   className="pt-0 pt-md-4"
                 >
+                <div>{imagePreview}</div>
                   <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">

@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import ProfileImage from "./imageupload.jsx";
+import AvatarEditor from "react-avatar-editor";
+// reactstrap components
 
 import {
   Button,
@@ -59,7 +62,7 @@ class Profile extends React.Component {
   // onDeactivate:
   onDeactivate() {
     this.setState({ red: !this.state.red });
-    this.setState({ name: !this.state.name });
+    this.setState({ name: !this.state.rider.status });
   }
 
   // load Data for a specific sacc
@@ -100,7 +103,20 @@ class Profile extends React.Component {
       ratings,
       sacco
     } = this.props.rider;
-    //console.log(id);
+    console.log(this.props)
+    console.log(riderPassportPhoto);
+    const pic = riderPassportPhoto;
+    const imagePreview = (
+      <div
+        className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+        style={{
+          minHeight: "400px",
+          backgroundImage: `url(/${pic})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center top"
+        }}
+      ></div>
+    );
     return (
       <>
         <UserHeader name={`${riderFname} ${riderLname}`} />
@@ -117,9 +133,12 @@ class Profile extends React.Component {
                   style={{ background: "#e4f0f7" }}
                   className="pt-0 pt-md-4"
                 >
+                  <div>{imagePreview}</div>
+                  {/* <ProfileImage /> */}
                   <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
+                        {/* <AvatarEditor image={riderPassportPhoto} /> */}
                         <div>
                           <span className="heading">{`${ratings} star`}</span>
                           <span className="description">Rider's Rating</span>
@@ -310,7 +329,7 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={moment(DLIssueDate).format('MM-DD-YYYY')}
+                              value={moment(DLIssueDate).format("MM-DD-YYYY")}
                               name="DLIssueDate"
                               onChange={this.handleChange}
                               placeholder="Issue date"
@@ -328,7 +347,7 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              value={moment(DLExpDate).format('MM-DD-YYYY')}
+                              value={moment(DLExpDate).format("MM-DD-YYYY")}
                               name="DLExpDate"
                               onChange={this.handleChange}
                               placeholder="Exp date"
