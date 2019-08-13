@@ -11,6 +11,7 @@ const app = express();
 const logger = require('morgan');
 const router = express.Router();
 const {API_KEY2, API_KEY, port} = require('../config.js');
+const path = require('path')
 
 // const port = process.env.PORT || 4040;
 app.use(logger('dev'))
@@ -304,7 +305,7 @@ app.get('/api/riders/email/:email', (req, res) => {
     .populate({
       path: 'sacco',
       match: { email: email },
-      select: 'name -_id',
+      select: ['uniqueSaccoCode -_id']
     })
     .then(rider => {
       if (!rider)
@@ -465,6 +466,27 @@ app.get('/api/saccos/:id', (req, res) => {
     });
 });
 
+//fetch secific sacco based on their emails
+app.get('/api/saccos/email/:email', (req, res) => {
+  // parameter
+  let saccoId;
+  try {
+    saccoEmail = req.params.email;
+    console.log(saccoEmail);
+  } catch (error) {
+    res.json({ message: `Invalid sacco email ${error}` });
+  }
+
+  Sacco.find({ email: saccoEmail })
+    .then(sacco => {
+      console.log(sacco);
+      res.json(sacco).status(200); // this a single object rbeing returned
+    })
+    .catch(err => {
+      res.send(`Internal server error${err}`).status(400);
+    });
+});
+
 // post api
 app.post('/api/saccos', (req, res) => {
   const { email, password } = req.body;
@@ -582,12 +604,20 @@ app.put('/api/saccos/:id', (req, res) => {
     });
 });
 
+if(process.env.NODE_ENV ==='production'){
+  app.use(express.static('client/build'))
+
+  app.get('*',(req,res)=>{
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
+
 // creating a connection to mongoose
-// 'mongodb://localhost/fika-safe'
+// 'mongodb://localhost/fika-saf
 mongoose
-  .connect(API_KEY2, { useNewUrlParser: true })
+  .connect(process.env.API_KEY2 || API_KEY2, { useNewUrlParser: true })
   .then(() => {
-    app.listen(4000, () => {
+    app.listen(process.env.PORT || 4000, () => {
       console.log('Listening on port 4000');
     });
   })

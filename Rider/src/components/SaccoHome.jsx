@@ -144,7 +144,7 @@ class SaccoHome extends React.Component {
     console.log(this.props);
     return (
       <div>
-        <Link to="/sacco/riders/new-rider">
+        <Link to={`/sacco/riders/new-rider/${this.props.email}`}>
           <Button style={{ margin: '40px', float: 'right' }} color="success">
             New Rider
           </Button>
