@@ -99,19 +99,16 @@ app.post('/api/register', async (request, response) => {
 app.post('/sms', (req, res) => {
   let { sessionId, serviceCode, from, text } = req.body
   let phoneNumber = from;
-
   const credentials = {
     apiKey: API_KEY,
-    username: 'nyatindopatrick',
-    from: '65456'
+    username: 'loopedin',
+    shortcode: '22384'
   }
-
+  console.log(credentials);
   // Initialize the SDK
   const AfricasTalking = require('africastalking')(credentials);
-
   // Get the SMS service
   const sms = AfricasTalking.SMS;
-
   function sendMessage(client_phone_number, sms_message) {
     const options = {
       // Set the numbers you want to send to in international format
@@ -119,19 +116,14 @@ app.post('/sms', (req, res) => {
       // Set your message
       message: sms_message,
       // Set your shortCode or senderId
-      // from: "65456"
+      from: "LakeHub"
     }
-
     sms.send(options)
       .then(console.log)
       .catch(console.log);
   }
-
-
   let client_phone_number = phoneNumber;
   let sms_message;
-
-
   console.log(`sms received`);
   Rider.findOne({ numberPlate: text }).exec().then((result) => {
     if (result) {
@@ -161,7 +153,6 @@ app.post('/sms', (req, res) => {
             Motorbike Owner: ${rider.bikeOwnerFname} ${rider.bikeOwnerLname},
             Rider's Contact:${rider.riderTelNumber},
             Sacco Contact:`;
-
       sendMessage(client_phone_number, sms_message);
     } else {
       sms_message = `The rider is not registered.`
@@ -173,9 +164,7 @@ app.post('/sms', (req, res) => {
       sms_message = `Nothing to send`;
       console.log("unable to send SMS - exception");
     });
-
   res.status(200).send('OK');
-
 });
 
 
