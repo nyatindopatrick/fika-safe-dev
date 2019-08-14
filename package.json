@@ -6,7 +6,8 @@
   "scripts": {
     "format": "prettier --write --single-quote --no-semi --print-width=120 --tab-width=2 \"src/**/*.{js,jsx} \"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -w server.js "
+    "start": "nodemon -w server.js ",
+    "heroku-build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm install --prefix Rider"
   },
   "eslintConfig": {
     "settings": {
