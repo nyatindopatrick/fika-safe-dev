@@ -10,7 +10,7 @@ const nodemailer = require('nodemailer');
 const app = express();
 const logger = require('morgan');
 const router = express.Router();
-const {API_KEY2, API_KEY, port} = require('../config.js');
+const {API_KEY2, API_KEY, port} = require('./config.js');
 const path = require('path')
 
 // const port = process.env.PORT || 4040;
