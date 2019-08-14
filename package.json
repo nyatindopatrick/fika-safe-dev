@@ -6,23 +6,8 @@
   "scripts": {
     "format": "prettier --write --single-quote --no-semi --print-width=120 --tab-width=2 \"src/**/*.{js,jsx} \"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -w server server/server.js server.js sms.js",
-    "babel": "babel server.js --out-dir dist --source-maps",
-    "babel-watch": "babel server.js --out-dir dist --source-maps --watch",
-    "compile-server": "babel server --presets @babel/preset-env --out-dir dist --source-maps",
-    "server": "nodemon -w server server/server.js server.js",
-    "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run sms.js\"",
-    "watch-server": "babel server --presets @babel/preset-env --out-dir dist --source-maps --watch",
-    "compile": "webpack",
-    "build-watch": "webpack --watch",
-    "watch": "webpack-dev-server --hot --inline",
-    "dev-all": "npm run watch-server & npm start",
-    "lint": "eslint '**/*.{js,jsx}' --quiet",
-    "lint:fix": "eslint '**/*.{js,jsx}' --fix",
-    "lint1": "eslint --ext js,jsx src server webpack.config.js",
-    "client-install": "npm install --prefix client",
-    "heroku-build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "start": "nodemon -w server server/server.js ",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "eslintConfig": {
     "settings": {
@@ -76,11 +61,11 @@
     "source-map-support": "0.5.12",
     "validator": "11.1.0",
     "whatwg-fetch": "3.0.0",
-    "yup": "^0.27.0"
+    "yup": "^0.27.0",
+    "nodemon": "1.19.1"
   },
   "devDependencies": {
     "concurrently": "^4.1.1",
-    "husky": "3.0.2",
-    "nodemon": "1.19.1"
+    "husky": "3.0.2"
   }
 }

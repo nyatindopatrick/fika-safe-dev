@@ -250,9 +250,9 @@ app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
   res.send('You are authenticated'); //Sending some response when authenticated
 });
 
-// app.get('/checkToken', jwtMW, function (req, res) {
-//   res.sendStatus(200);
-// });
+app.get('/checkToken', jwtMW, function (req, res) {
+  res.sendStatus(200);
+});
 
 app.get('/', (req, res) => {
   res.json('this is our first server page');
@@ -615,9 +615,9 @@ if(process.env.NODE_ENV ==='production'){
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-saf
 mongoose
-  .connect(process.env.MONGODB_URI || API_KEY2, { useNewUrlParser: true })
+  .connect(process.env.API_KEY2 || API_KEY2, { useNewUrlParser: true })
   .then(() => {
-    app.listen(4000, () => {
+    app.listen(process.env.PORT || port, () => {
       console.log('Listening on port 4000');
     });
   })
