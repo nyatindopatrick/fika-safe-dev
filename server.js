@@ -72,9 +72,9 @@ mongoose.set('useFindAndModify', false);
 
 const ObjectId = require('mongodb').ObjectID;
 
-const jwtMW = exjwt({
-  secret: 'keyboard cat 4 ever',
-});
+// const jwtMW = exjwt({
+//   secret: 'keyboard cat 4 ever',
+// });
 
 // an instance of express
 
@@ -91,9 +91,9 @@ app.post('/api/register', async (request, response) => {
   }
 });
 // check our token if it is true
-app.get('/checkToken', jwtMW, function (req, res) {
-  res.sendStatus(200);
-});
+// app.get('/checkToken', jwtMW, function (req, res) {
+//   res.sendStatus(200);
+// });
 
 //Africastalking SMS
 app.post('/sms', (req, res) => {
@@ -245,14 +245,14 @@ app.post('/api/sacco/login', (req, res) => {
   });
 });
 
-app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
-  console.log('Web Token Checked.');
-  res.send('You are authenticated'); //Sending some response when authenticated
-});
+// app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
+//   console.log('Web Token Checked.');
+//   res.send('You are authenticated'); //Sending some response when authenticated
+// });
 
-app.get('/checkToken', jwtMW, function (req, res) {
-  res.sendStatus(200);
-});
+// app.get('/checkToken', jwtMW, function (req, res) {
+//   res.sendStatus(200);
+// });
 
 app.get('/', (req, res) => {
   res.json('this is our first server page');
@@ -542,7 +542,7 @@ app.post('/api/saccos', (req, res) => {
     });
 });
 
-app.delete('/api/saccos/:id', jwtMW, (req, res) => {
+app.delete('/api/saccos/:id', (req, res) => {
   let saccosId;
   try {
     saccosId = req.params.id;
