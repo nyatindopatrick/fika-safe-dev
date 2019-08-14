@@ -6,7 +6,7 @@ export default class authHelperMethods {
   }
 
   login = (email, password) => {
-    return this.fetch(`/api/login`, {
+    return this.fetch(`https://fika-safe1.herokuapp.com/api/login`, {
       method: "POST",
       body: JSON.stringify({
         email,
