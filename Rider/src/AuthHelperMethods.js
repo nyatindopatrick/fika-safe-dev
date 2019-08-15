@@ -1,4 +1,5 @@
 import decode from "jwt-decode";
+import {url} from 'domain.js'
 
 export default class authHelperMethods {
   constructor(domain) {
@@ -6,7 +7,7 @@ export default class authHelperMethods {
   }
 
   login = (email, password) => {
-    return this.fetch(`/api/sacco/login`, {
+    return this.fetch(`${url}/api/sacco/login`, {
       method: "POST",
       body: JSON.stringify({
         email,

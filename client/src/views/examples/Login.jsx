@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { url } from "domain.js";
 // reactstrap components
 import {
   Button,
@@ -15,11 +16,11 @@ import {
   InputGroup,
   Row,
   Col,
-  Container,
-} from 'reactstrap';
+  Container
+} from "reactstrap";
 
-import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
-import AuthFooter from 'components/Footers/AuthFooter.jsx';
+import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
+import AuthFooter from "components/Footers/AuthFooter.jsx";
 
 class Login extends React.Component {
   // constructor
@@ -27,8 +28,8 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-      username: '',
-      password: '',
+      username: "",
+      password: ""
     };
   }
 
@@ -38,7 +39,7 @@ class Login extends React.Component {
     const name = target.name;
     const value = target.value;
     this.setState({
-      [name]: value,
+      [name]: value
     });
     console.log(this.state);
   };
@@ -46,16 +47,16 @@ class Login extends React.Component {
   // this invokes the fetch api
   onSubmit = event => {
     event.preventDefault();
-    fetch('/api/login', {
-      method: 'POST',
+    fetch(`${url}/api/login`, {
+      method: "POST",
       body: JSON.stringify(this.state),
       headers: {
-        'Content-Type': 'application/json',
-      },
+        "Content-Type": "application/json"
+      }
     })
       .then(res => {
         if (res.status === 200) {
-          this.props.history.push('/admin/index');
+          this.props.history.push("/admin/index");
         } else {
           const error = new Error(res.error);
           throw error;
@@ -63,7 +64,7 @@ class Login extends React.Component {
       })
       .catch(err => {
         console.error(err);
-        alert('Error logging in please try again');
+        alert("Error logging in please try again");
       });
   };
   render() {
@@ -98,11 +99,11 @@ class Login extends React.Component {
                 <Card className="bg-secondary shadow border-0">
                   <CardBody className="px-lg-5 py-lg-5">
                     <div className="text-center text-muted mb-4">
-                      <div className="container div1" style={{ size: '50px' }}>
+                      <div className="container div1" style={{ size: "50px" }}>
                         <NavbarBrand>
                           <img
                             alt="..."
-                            src={require('assets/img/brand/fikas.png')}
+                            src={require("assets/img/brand/fikas.png")}
                           />
                         </NavbarBrand>
                       </div>

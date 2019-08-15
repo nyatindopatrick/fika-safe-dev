@@ -6,6 +6,7 @@ import Header from "components/Headers/Header.jsx";
 import AdminHome from "components/AdminHome.jsx";
 import { Container } from "reactstrap";
 import { withRouter } from "react-router";
+import { url } from "domain.js";
 
 /* Once the 'Authservice' and 'withAuth' componenets are created, import them into App.js */
 import AuthHelperMethods from "AuthHelperMethods.js";
@@ -33,7 +34,7 @@ class Dashboard extends Component {
   // loading the state with data
   loadData() {
     // axios is so messsy
-    fetch(`/api/saccos`)
+    fetch(`${url}/api/saccos`)
       .then(response => response.json())
       .then(data => {
         // console.log(data)
@@ -58,7 +59,7 @@ class Dashboard extends Component {
         <div className="main-content" ref="mainContent">
           <Navbar />
           <Header data={this.state.data} />
-          <AdminHome                                                                                                                                                                                                                    />
+          <AdminHome />
           <Container fluid>
             <Footer />
           </Container>
