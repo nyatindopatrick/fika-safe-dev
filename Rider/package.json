@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "React version of Argon Dashboard by Creative Tim",
   "main": "index.js",
-  "proxy": "http://localhost:4000/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/creativetimofficial/argon-dashboard-react.git"
@@ -45,6 +44,9 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.2.21",
+    "@fortawesome/free-solid-svg-icons": "5.10.1",
+    "@fortawesome/react-fontawesome": "0.1.4",
     "chart.js": "2.7.3",
     "classnames": "2.2.6",
     "jwt-decode": "2.2.0",

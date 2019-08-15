@@ -4,6 +4,7 @@ import Sidebar from "components/Sidebar/Sidebar.jsx";
 import Footer from "components/Footers/AdminFooter.jsx";
 import Profile from "components/Profile.jsx";
 import { Container } from "reactstrap";
+import { url } from "domain.js";
 
 //Our higher order component
 import withAuth from "withAuth.js";
@@ -29,7 +30,7 @@ class SaccoProfile extends Component {
 
   loadData() {
     console.log(this.state.id);
-    fetch(`/api/saccos/${this.props.match.params.id}`)
+    fetch(`${url}/api/saccos/${this.props.match.params.id}`)
       .then(response => {
         if (response.ok) {
           response.json().then(sacco => {
@@ -48,7 +49,7 @@ class SaccoProfile extends Component {
   }
   // saves the data to the database
   update = data => {
-    fetch(`/api/saccos/${this.props.match.params.id}`, {
+    fetch(`${url}/api/saccos/${this.props.match.params.id}`, {
       method: "PUT",
       body: JSON.stringify({
         data

@@ -1,5 +1,6 @@
 import React from "react";
 // import AdminLayout from '../layouts/Admin.jsx'
+import { url } from "domain.js";
 
 // reactstrap components
 import {
@@ -116,7 +117,7 @@ class NewSacco extends React.Component {
         formErrors.confirmpassword =
           value.length < 6 ? "minimum 6 characaters required" : "";
         formErrors.confirmpassword =
-          value != this.state.password ? "Password don't match!!" : "";
+          value !== this.state.password ? "Password don't match!!" : "";
         break;
       default:
     }
@@ -156,7 +157,7 @@ class NewSacco extends React.Component {
   };
   // saves the data to the db
   saveData = data => {
-    fetch(`/api/saccos`, {
+    fetch(`${url}/api/saccos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -172,6 +173,7 @@ class NewSacco extends React.Component {
         alert("unable create the sacco");
       });
   };
+
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal
@@ -538,14 +540,32 @@ class NewSacco extends React.Component {
                       >
                         Save
                       </Button>
-                      <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                        <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                      <Modal
+                        isOpen={this.state.modal}
+                        toggle={this.toggle}
+                        className={this.props.className}
+                      >
+                        <ModalHeader toggle={this.toggle}>
+                          Modal title
+                        </ModalHeader>
                         <ModalBody>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit, sed do eiusmod tempor incididunt ut labore et
+                          dolore magna aliqua. Ut enim ad minim veniam, quis
+                          nostrud exercitation ullamco laboris nisi ut aliquip
+                          ex ea commodo consequat. Duis aute irure dolor in
+                          reprehenderit in voluptate velit esse cillum dolore eu
+                          fugiat nulla pariatur. Excepteur sint occaecat
+                          cupidatat non proident, sunt in culpa qui officia
+                          deserunt mollit anim id est laborum.
                         </ModalBody>
                         <ModalFooter>
-                          <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-                          <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                          <Button color="primary" onClick={this.toggle}>
+                            Do Something
+                          </Button>{" "}
+                          <Button color="secondary" onClick={this.toggle}>
+                            Cancel
+                          </Button>
                         </ModalFooter>
                       </Modal>
                     </div>

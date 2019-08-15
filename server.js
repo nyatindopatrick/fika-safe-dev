@@ -10,12 +10,33 @@ const nodemailer = require('nodemailer');
 const app = express();
 const logger = require('morgan');
 const router = express.Router();
-const {API_KEY2, API_KEY, port} = require('../config.js');
-const path = require('path')
+const {API_KEY2, API_KEY, port} = require('./config.js');
+const path = require('path');
+const cors =require('cors')
+
+// handles images
+const cloudinary = require('cloudinary')
+const formData = require('express-form-data')
 
 // const port = process.env.PORT || 4040;
 app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
+// handling cross origin requests
+// whitelisting some allowed domains
+var whitelist = ['http://localhost:3000','https://sacco-client.herokuapp.com','https://rider-client.herokuapp.com'];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+// passing the allowed domains to the  cors options
+app.use(cors(corsOptions));
+
+
 
 //setting image storage route
 const uploads = 'uploads/';
@@ -72,9 +93,9 @@ mongoose.set('useFindAndModify', false);
 
 const ObjectId = require('mongodb').ObjectID;
 
-const jwtMW = exjwt({
-  secret: 'keyboard cat 4 ever',
-});
+// const jwtMW = exjwt({
+//   secret: 'keyboard cat 4 ever',
+// });
 
 // an instance of express
 
@@ -91,27 +112,24 @@ app.post('/api/register', async (request, response) => {
   }
 });
 // check our token if it is true
-app.get('/checkToken', jwtMW, function (req, res) {
-  res.sendStatus(200);
-});
+// app.get('/checkToken', jwtMW, function (req, res) {
+//   res.sendStatus(200);
+// });
 
 //Africastalking SMS
 app.post('/sms', (req, res) => {
   let { sessionId, serviceCode, from, text } = req.body
   let phoneNumber = from;
-
   const credentials = {
     apiKey: API_KEY,
     username: 'loopedin',
-    from: '22384'
+    shortcode: '22384'
   }
-
+  console.log(credentials);
   // Initialize the SDK
   const AfricasTalking = require('africastalking')(credentials);
-
   // Get the SMS service
   const sms = AfricasTalking.SMS;
-
   function sendMessage(client_phone_number, sms_message) {
     const options = {
       // Set the numbers you want to send to in international format
@@ -121,17 +139,12 @@ app.post('/sms', (req, res) => {
       // Set your shortCode or senderId
       from: "LakeHub"
     }
-
     sms.send(options)
       .then(console.log)
       .catch(console.log);
   }
-
-
   let client_phone_number = phoneNumber;
   let sms_message;
-
-
   console.log(`sms received`);
   Rider.findOne({ numberPlate: text }).exec().then((result) => {
     if (result) {
@@ -161,7 +174,6 @@ app.post('/sms', (req, res) => {
             Motorbike Owner: ${rider.bikeOwnerFname} ${rider.bikeOwnerLname},
             Rider's Contact:${rider.riderTelNumber},
             Sacco Contact:`;
-
       sendMessage(client_phone_number, sms_message);
     } else {
       sms_message = `The rider is not registered.`
@@ -173,9 +185,7 @@ app.post('/sms', (req, res) => {
       sms_message = `Nothing to send`;
       console.log("unable to send SMS - exception");
     });
-
   res.status(200).send('OK');
-
 });
 
 
@@ -245,10 +255,10 @@ app.post('/api/sacco/login', (req, res) => {
   });
 });
 
-app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
-  console.log('Web Token Checked.');
-  res.send('You are authenticated'); //Sending some response when authenticated
-});
+// app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
+//   console.log('Web Token Checked.');
+//   res.send('You are authenticated'); //Sending some response when authenticated
+// });
 
 // app.get('/checkToken', jwtMW, function (req, res) {
 //   res.sendStatus(200);
@@ -261,7 +271,6 @@ app.get('/', (req, res) => {
 
 // ...req.body,
 // riderPassportPhoto: req.file.path,
-
 
 
 app.post("/api/riders", upload.single('riderPassportPhoto'), (req, res, next) => {
@@ -542,7 +551,7 @@ app.post('/api/saccos', (req, res) => {
     });
 });
 
-app.delete('/api/saccos/:id', jwtMW, (req, res) => {
+app.delete('/api/saccos/:id', (req, res) => {
   let saccosId;
   try {
     saccosId = req.params.id;
@@ -604,20 +613,23 @@ app.put('/api/saccos/:id', (req, res) => {
     });
 });
 
-if(process.env.NODE_ENV ==='production'){
-  app.use(express.static('client/build'))
+// if(process.env.NODE_ENV ==='production'){
+//   app.use(express.static('client/build'))
 
-  app.get('*',(req,res)=>{
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-  })
-}
+//   app.get('*',(req,res)=>{
+//     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+//   })
+// }
+
+// "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+
 
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-saf
 mongoose
   .connect(process.env.API_KEY2 || API_KEY2, { useNewUrlParser: true })
   .then(() => {
-    app.listen(process.env.PORT || 4000, () => {
+    app.listen(process.env.PORT || port, () => {
       console.log('Listening on port 4000');
     });
   })

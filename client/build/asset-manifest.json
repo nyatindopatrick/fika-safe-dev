@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/argon-dashboard-react/static/css/main.5690d5fd.chunk.css",
+    "main.js": "/argon-dashboard-react/static/js/main.7b45b95b.chunk.js",
+    "main.js.map": "/argon-dashboard-react/static/js/main.7b45b95b.chunk.js.map",
+    "runtime~main.js": "/argon-dashboard-react/static/js/runtime~main.e1a1abba.js",
+    "runtime~main.js.map": "/argon-dashboard-react/static/js/runtime~main.e1a1abba.js.map",
+    "static/js/2.e93d7355.chunk.js": "/argon-dashboard-react/static/js/2.e93d7355.chunk.js",
+    "static/js/2.e93d7355.chunk.js.map": "/argon-dashboard-react/static/js/2.e93d7355.chunk.js.map",
+    "index.html": "/argon-dashboard-react/index.html",
+    "precache-manifest.c910d31d285585ab213cda65bae8ce5d.js": "/argon-dashboard-react/precache-manifest.c910d31d285585ab213cda65bae8ce5d.js",
+    "service-worker.js": "/argon-dashboard-react/service-worker.js",
+    "static/css/main.5690d5fd.chunk.css.map": "/argon-dashboard-react/static/css/main.5690d5fd.chunk.css.map",
+    "static/media/argon-react.png": "/argon-dashboard-react/static/media/argon-react.a7a21d3e.png",
+    "static/media/all.min.css": "/argon-dashboard-react/static/media/fa-solid-900.815694de.woff",
+    "static/media/fikas.png": "/argon-dashboard-react/static/media/fikas.ed360c09.png",
+    "static/media/nucleo.css": "/argon-dashboard-react/static/media/nucleo-icons.f82ec6ba.ttf"
+  }
+}

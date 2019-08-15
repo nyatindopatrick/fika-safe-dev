@@ -4,6 +4,7 @@ import Picker from './DatePicker.jsx';
 import { MDBCol, MDBIcon } from 'mdbreact';
 import RiderTable from './RiderTable.jsx';
 import { withRouter } from 'react-router';
+import {url} from 'domain.js'
 
 import {
   Button,
@@ -77,7 +78,7 @@ class SaccoHome extends React.Component {
   // get data from the db and loads it to state
   loadData() {
     // axios is so messsy
-    fetch(`/api/riders/email/${this.props.email}`)
+    fetch(`${url}/api/riders/email/${this.props.email}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
