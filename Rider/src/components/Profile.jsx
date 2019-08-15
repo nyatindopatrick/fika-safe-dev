@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import Image from "./ImageUpload.jsx"
 
 import {
   Button,
@@ -129,6 +130,7 @@ class Profile extends React.Component {
                   style={{ background: '#e4f0f7' }}
                   className="pt-0 pt-md-4"
                 >
+         
                 <div>{imagePreview}</div>
                   <Row>
                     <div className="col">

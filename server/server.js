@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const exjwt = require('express-jwt');
 const express = require('express');
 const multer = require('multer');
+const dotenv = require('dotenv');
+dotenv.config();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
@@ -11,7 +13,6 @@ const app = express();
 const logger = require('morgan');
 const router = express.Router();
 const {API_KEY2, API_KEY, port} = require('../config.js');
-
 // const port = process.env.PORT || 4040;
 app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
@@ -100,10 +101,11 @@ app.post('/sms', (req, res) => {
   let phoneNumber = from;
 
   const credentials = {
-    apiKey: API_KEY,
-    username: 'loopedin',
-    from: '22384'
+    apiKey: process.env.API_KEY,
+    username: 'sandbox',
+    shortcode: '65456'
   }
+  console.log(credentials);
 
   // Initialize the SDK
   const AfricasTalking = require('africastalking')(credentials);
@@ -118,7 +120,7 @@ app.post('/sms', (req, res) => {
       // Set your message
       message: sms_message,
       // Set your shortCode or senderId
-      from: "LakeHub"
+      from: "65456"
     }
 
     sms.send(options)
@@ -256,12 +258,6 @@ app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
 app.get('/', (req, res) => {
   res.json('this is our first server page');
 });
-
-
-// ...req.body,
-// riderPassportPhoto: req.file.path,
-
-
 
 app.post("/api/riders", upload.single('riderPassportPhoto'), (req, res, next) => {
   const riders = new Rider({
@@ -585,7 +581,7 @@ app.put('/api/saccos/:id', (req, res) => {
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
 mongoose
-  .connect(API_KEY2, { useNewUrlParser: true })
+  .connect(process.env.API_KEY2, { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
       console.log('Listening on port 4000');

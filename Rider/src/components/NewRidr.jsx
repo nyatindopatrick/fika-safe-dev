@@ -1,4 +1,5 @@
 import React from "react";
+import ImageUpload from "./ImageUpload.jsx"
 // import AdminLayout from '../layouts/Admin.jsx'
 
 // reactstrap components
@@ -185,10 +186,59 @@ class NewSacco extends React.Component {
     const { formErrors } = this.state;
 
     return (
-      <div style={{ marginTop: "160px" }}>
+      <div style={{ marginTop: "160px", marginLeft: "20px" }}>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
+          <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
+              <Card className="card-profile shadow">
+                <Row className="justify-content-center">
+                  <Col className="order-lg-2" lg="3" />
+                </Row>
+
+                <CardBody
+                  style={{ background: '#e4f0f7' }}
+                  className="pt-0 pt-md-4"
+                >
+                <ImageUpload />
+                  <Row>
+                    <div className="col">
+                      <div className="card-profile-stats d-flex justify-content-center mt-md-5">
+                        <div>
+                          <span className="heading">{` star`}</span>
+                          <span className="description">Rider's Rating</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Row>
+                  <div className="text-center">
+                    <h3></h3>
+                    <h3 style={{ background: '#cee0eb', borderRadius: '10px' }}>
+                      
+                    </h3>
+                    <div className="h5 font-weight-300">
+                      <i className="ni location_pin mr-2" />
+                    
+                    </div>
+                    <div className="h5 mt-4">
+                      <i className="ni business_briefcase-24 mr-2" />
+                      Insurance Number: 
+                    </div>
+                    <div className="h5 mt-4">
+                      <i className="ni business_briefcase-24 mr-2" />
+                      Number Plate: 
+                    </div>
+                    <div className="h5 mt-4">
+                      <i className="ni education_hat mr-2" />
+                      License Number: 
+                    </div>
+                    <hr className="my-4" />
+                    <p>{`Insurance number  expires in 
+                    ).format('MM-DD-YYYY')}`}</p>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
             <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
                 <CardBody>

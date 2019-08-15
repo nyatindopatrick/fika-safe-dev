@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import ProfileImage from "./imageupload.jsx";
-import AvatarEditor from "react-avatar-editor";
 // reactstrap components
 
 import {
