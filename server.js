@@ -19,7 +19,7 @@ app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
 // handling cross origin requests
 // whitelisting some allowed domains
-var whitelist = ['http://localhost:3000'];
+var whitelist = ['http://localhost:3000','https://sacco-client.herokuapp.com','https://rider-client.herokuapp.com'];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
