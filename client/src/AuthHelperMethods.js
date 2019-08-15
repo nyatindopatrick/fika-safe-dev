@@ -1,12 +1,12 @@
 import decode from "jwt-decode";
-
+import { url } from "domain.js";
 export default class authHelperMethods {
   constructor(domain) {
     this.domain = domain || "http://localhost:3000";
   }
 
   login = (email, password) => {
-    return this.fetch(`https://fika-safe1.herokuapp.com/api/login`, {
+    return this.fetch(`${url}/api/login`, {
       method: "POST",
       body: JSON.stringify({
         email,
