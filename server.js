@@ -11,11 +11,28 @@ const app = express();
 const logger = require('morgan');
 const router = express.Router();
 const {API_KEY2, API_KEY, port} = require('./config.js');
-const path = require('path')
+const path = require('path');
+const cors =require('cors')
 
 // const port = process.env.PORT || 4040;
 app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
+// handling cross origin requests
+// whitelisting some allowed domains
+var whiteList = ['https://fika-safe1.herokuapp.com'];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+// passing the allowed domains to the  cors options
+app.use(cors(corsOptions));
+
+
 
 //setting image storage route
 const uploads = 'uploads/';
