@@ -19,7 +19,7 @@ app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
 // handling cross origin requests
 // whitelisting some allowed domains
-var whitelist = ['https://fika-safe1.herokuapp.com'];
+var whitelist = ['http://localhost:3000'];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
