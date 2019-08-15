@@ -14,6 +14,10 @@ const {API_KEY2, API_KEY, port} = require('./config.js');
 const path = require('path');
 const cors =require('cors')
 
+// handles images
+const cloudinary = require('cloudinary')
+const formData = require('express-form-data')
+
 // const port = process.env.PORT || 4040;
 app.use(logger('dev'))
 app.use("/uploads", express.static('uploads'));
@@ -267,7 +271,6 @@ app.get('/', (req, res) => {
 
 // ...req.body,
 // riderPassportPhoto: req.file.path,
-
 
 
 app.post("/api/riders", upload.single('riderPassportPhoto'), (req, res, next) => {

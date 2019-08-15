@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { url } from 'domain.js';
+import ImageRender from 'components/image-uploads/ImageRender.jsx';
 
 import {
   Button,
@@ -56,6 +58,11 @@ class Profile extends React.Component {
       diabled: true,
       red: true,
       name: 'active',
+
+      // images
+      uploading: false,
+      imagePreviewUrl: '',
+      images: [],
     };
   }
 
@@ -67,7 +74,7 @@ class Profile extends React.Component {
   // fetch data for the specific sacco
   loadData() {
     // axios is so messsy
-    fetch(`/api/saccos/email/${this.props.email}`)
+    fetch(`${url}/api/saccos/email/${this.props.email}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -86,12 +93,11 @@ class Profile extends React.Component {
   handleChange = event => {
     const target = event.target;
     const { name, value } = target;
-
+    const formData = new FormData();
+    formData.append([name], value);
     event.preventDefault();
     this.setState({
-      rider: {
-        [name]: value,
-      },
+      [name]: value,
     });
   };
 
@@ -138,6 +144,8 @@ class Profile extends React.Component {
       insuranceIssueDate,
       insuranceExpDate,
       numberPlate,
+      uploading,
+      images,
 
       created,
       status,
@@ -146,6 +154,9 @@ class Profile extends React.Component {
       sacco,
     } = this.state;
     //console.log(id);
+
+    // handle some photo sh*t
+
     const pic = riderPassportPhoto;
     const imagePreview = (
       <div
@@ -174,8 +185,11 @@ class Profile extends React.Component {
                   style={{ background: '#e4f0f7' }}
                   className="pt-0 pt-md-4"
                 >
-                  <div>{imagePreview}</div>
-                  <Row>
+                  <ImageRender />
+                  {/* <div>
+                    <div className="buttons">{content()}</div>
+                  </div> */}
+                  {/* <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                         <div>
@@ -184,8 +198,8 @@ class Profile extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </Row>
-                  <div className="text-center">
+                  </Row> */}
+                  {/* <div className="text-center">
                     <h3></h3>
                     <h3 style={{ background: '#cee0eb', borderRadius: '10px' }}>
                       {btn_name}
@@ -210,11 +224,11 @@ class Profile extends React.Component {
                     <p>{`Insurance number  expires in ${moment(
                       insuranceExpDate
                     ).format('MM-DD-YYYY')}`}</p>
-                  </div>
+                  </div> */}
                 </CardBody>
               </Card>
             </Col>
-            <Col className="order-xl-1" xl="9">
+            <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
                 <CardHeader className="bg-white border-0">
                   {/* <Link to="/admin/logs">

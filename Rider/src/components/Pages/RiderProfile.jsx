@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar/Sidebar.jsx';
 import Footer from '../Footers/AdminFooter.jsx';
 import Profile from '../Profile.jsx';
 import { Container } from 'reactstrap';
+import { url } from 'domain.js';
 
 import AuthHelperMethods from 'AuthHelperMethods.js';
 //Our higher order component
@@ -30,7 +31,7 @@ class RiderProfile extends Component {
 
   loadData() {
     console.log(this.state.id);
-    fetch(`/api/riders/id/${this.props.match.params.id}`)
+    fetch(`${url}/api/riders/id/${this.props.match.params.id}`)
       .then(response => {
         if (response.ok) {
           response.json().then(rider => {
@@ -50,7 +51,7 @@ class RiderProfile extends Component {
   // saves the data to the database
   update = data => {
     console.log(this.props.match.params.id);
-    fetch(`/api/riders/${this.props.match.params.id}`, {
+    fetch(`${url}/api/riders/${this.props.match.params.id}`, {
       method: 'PUT',
       body: JSON.stringify({
         data,

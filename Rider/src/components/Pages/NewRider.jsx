@@ -7,7 +7,7 @@ import { Container } from 'reactstrap';
 import AuthHelperMethods from 'AuthHelperMethods.js';
 //Our higher order component
 import withAuth from 'withAuth.js';
-
+// i hate relative paths guys please lets implement absolute paths all over our code
 class Dashboard extends Component {
   render(props) {
     console.log(this.props.match.params.email);
