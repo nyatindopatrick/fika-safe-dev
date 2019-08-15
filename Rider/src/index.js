@@ -27,11 +27,11 @@ ReactDOM.render(
       <Route path="/sacco/login" component={SaccoLogin} />
       <Route path="/sacco/home/:email" component={Dashboard} />
       <Route path="/sacco/logs" component={SaccoLogs} />
-      <Route path="/sacco/riders/new-rider" component={NewRider} />
+      <Route path="/sacco/riders/new-rider/:email" component={NewRider} />
       <Route path="/sacco/my-profile" component={SaccProfile} />
       <Route path="/sacco/riders/rider-profile/:id" component={RiderProfile} />
       {/* <Route path="/reset_password" component={ResetPassword} /> */}
-      {/* <Redirect from="/" to="/sacco/home" /> */}
+      {/* <Redirect from="/" to="/sacco/login" /> */}
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

@@ -101,9 +101,9 @@ app.post('/sms', (req, res) => {
   let phoneNumber = from;
 
   const credentials = {
-    apiKey: process.env.API_KEY,
-    username: 'sandbox',
-    shortcode: '65456'
+    apiKey: API_KEY,
+    username: 'loopedin',
+    shortcode: '22384'
   }
   console.log(credentials);
 
@@ -120,7 +120,7 @@ app.post('/sms', (req, res) => {
       // Set your message
       message: sms_message,
       // Set your shortCode or senderId
-      from: "65456"
+      from: "LakeHub"
     }
 
     sms.send(options)

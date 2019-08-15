@@ -1,196 +1,181 @@
-import React from "react";
-import ImageUpload from "./ImageUpload.jsx"
-// import AdminLayout from '../layouts/Admin.jsx'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { url } from 'domain.js';
+import Image from "./ImageUpload.jsx"
 
-// reactstrap components
 import {
   Button,
   Card,
+  CardHeader,
   CardBody,
   FormGroup,
   Form,
   Input,
   Container,
   Row,
-  Col
-} from "reactstrap";
+  Col,
+} from 'reactstrap';
 // core components
+import UserHeader from 'components/Headers/UserHeader.jsx';
+//Our higher order component
+import withAuth from 'withAuth.js';
 
-const emailRegex = RegExp(
-  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-);
-
-const formValid = ({ formErrors, ...rest }) => {
-  let valid = true;
-  // validate form errors being empty
-  Object.values(formErrors).forEach(val => {
-    val.length > 0 && (valid = false);
-  });
-  // validate the form was filled out
-  Object.values(rest).forEach(val => {
-    val === null && (valid = false);
-  });
-  return valid;
-};
-class NewSacco extends React.Component {
+class Profile extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      description: "",
-      website: "",
-      date_founded: "",
-      name: "",
-      address: "",
-      registration_number: "",
-      telephone_number: "",
-      email: "",
-      postal_code: 0,
-      password: "",
-      confirmPassword: "",
-      // sendPassword: '',
-      // newUser: null,
-      formErrors: {
-        saccoName: "",
-        registrationNumber: "",
-        postal_code: "",
-        email: "",
-        year: "",
-        phone: "",
-        address: "",
-        website: "",
-        password: "",
-        confirmpassword: ""
-      }
+      riderFname: '',
+      riderSurName: '',
+      riderLname: '',
+      riderTelNumber: '',
+      riderID: '',
+      riderResidence: '',
+      // riderPassportPhoto:'',
+      riderBase: '',
+      drivingLicense: '',
+      DLIssueDate: '',
+      DLExpDate: '',
+
+      bikeOwnerFname: '',
+      bikeOwnerLname: '',
+      bikeOwnerResidence: '',
+      bikeOwnerID: '',
+      bikeOwnerTelNumber: '',
+
+      motorBikeMake: '',
+      motorBikeBrand: '',
+      insuranceNumber: '',
+      insuranceIssueDate: '',
+      insuranceExpDate: '',
+      numberPlate: '',
+
+      // created,
+      status: '',
+
+      ratings: 3,
+      sacco: '',
+      diabled: true,
+      red: true,
+      name: 'active',
+
+      // images
+      uploading: false,
+      imagePreviewUrl: '',
+      images: [],
     };
   }
 
-  // validation
-  handleChange = e => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    let formErrors = { ...this.state.formErrors };
+  // lifecycle control
+  componentDidMount() {
+    this.loadData();
+  }
 
-    switch (name) {
-      case "name":
-        formErrors.saccoName = value.length < 3 ? "Required" : "";
-        break;
-      case "registration_number":
-        formErrors.registrationNumber =
-          value.length < 3 ? "minimum 3 characaters required" : "";
-        break;
-      case "email":
-        formErrors.email = emailRegex.test(value)
-          ? ""
-          : "invalid email address";
-        break;
-      case "date_founded":
-        formErrors.year =
-          value.length < 3 ? "minimum 3 characaters required" : "";
-        break;
-      case "telephone_number":
-        formErrors.phone = /^[0-9]{10}$/.test(value)
-          ? ""
-          : "Invalid phone number";
-        break;
-      case "address":
-        formErrors.address = value.length > 5 ? "Invalid address" : "";
-        break;
-      case "website":
-        formErrors.website =
-          value.length < 3 ? "minimum 3 characaters required" : "";
-        break;
-      case "password":
-        formErrors.password =
-          value.length < 6 ? "Minimum 6 characaters required" : "";
-        break;
-      case "postal_code":
-        formErrors.postal_code = value.length > 8 ? "Invalid code" : "";
-        break;
-      case "confirmPassword":
-        formErrors.confirmpassword =
-          value.length < 6 ? "minimum 6 characaters required" : "";
-        formErrors.confirmpassword =
-          value != this.state.password ? "Password don't match!!" : "";
-        break;
-      default:
-    }
-
-    this.setState({ formErrors, [name]: value });
-  };
-
-  //handler functions
-  // handleChange = event => {
-  //   const target = event.target;
-  //   const name = target.name;
-  //   const value = target.value;
-  //   this.setState({
-  //     [name]: value,
-  //   });
-  //   console.log(this.state);
-  // };
-  handleSubmit = () => {
-    const data = this.state;
-    // invoke the saveData with the new data
-    if (formValid(this.state)) {
-      this.saveData({
-        description: data.description,
-        website: data.website,
-        date_founded: data.date_founded,
-        name: data.name,
-        registration_number: data.registration_number,
-        telephone_number: data.telephone_number,
-        email: data.email,
-        address: `P.O.BOX ${data.address}`,
-        postal_code: data.postal_code,
-        password: data.confirmPassword
-      });
-    } else {
-      console.log("Invalid");
-    }
-  };
-  // saves the data to the db
-  saveData = data => {
-    fetch(`/api/saccos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-      .then(res => res.json())
+  // fetch data for the specific sacco
+  loadData() {
+    // axios is so messsy
+    fetch(`${url}/api/saccos/email/${this.props.email}`)
+      .then(response => response.json())
       .then(data => {
         console.log(data);
-        const { history } = this.props;
-        //history.push(`/admin/index`);
+        let id = data.map(item => item._id);
+        // set the state with the id
+        this.setState({
+          sacco: id[0],
+        });
       })
       .catch(err => {
         console.log(err);
-        alert("unable create the sacco");
       });
+  }
+
+  // handle change
+  handleChange = event => {
+    const target = event.target;
+    const { name, value } = target;
+    const formData = new FormData();
+    formData.append([name], value);
+    event.preventDefault();
+    this.setState({
+      [name]: value,
+    });
   };
 
+  handleSubmit = event => {
+    event.preventDefault();
+    this.props.saveData(this.state.rider);
+  };
+
+  // onDeactivate:
+  onDeactivate() {
+    this.setState({ red: !this.state.red });
+    this.setState({ name: !this.state.name });
+  }
+
+  // load Data for a specific sacc
   render() {
+    let btn_class = this.state.red ? 'info' : 'danger';
+    let btn_name = this.state.name ? 'Active' : 'Deactivated';
+    //const { name,id} = this.props;
+    console.log(this.props);
+    console.log(this.state.sacco);
     const {
-      description,
-      website,
-      date_founded,
-      name,
-      address,
-      registration_number,
-      password,
-      confirmPassword,
-      telephone_number,
-      email,
-      postal_code
+      riderFname,
+      riderSurName,
+      riderLname,
+      riderTelNumber,
+      riderID,
+      riderResidence,
+      riderPassportPhoto,
+      riderBase,
+      drivingLicense,
+      DLIssueDate,
+      DLExpDate,
+
+      bikeOwnerFname,
+      bikeOwnerLname,
+      bikeOwnerResidence,
+      bikeOwnerID,
+      bikeOwnerTelNumber,
+
+      motorBikeMake,
+      motorBikeBrand,
+      insuranceNumber,
+      insuranceIssueDate,
+      insuranceExpDate,
+      numberPlate,
+      uploading,
+      images,
+
+      created,
+      status,
+      _id,
+      ratings,
+      sacco,
     } = this.state;
+    //console.log(id);
 
-    const { formErrors } = this.state;
+    // handle some photo sh*t
 
+    const pic = riderPassportPhoto;
+    const imagePreview = (
+      <div
+        className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+        style={{
+          minHeight: '400px',
+          backgroundImage: `url(/${pic})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+        }}
+      ></div>
+    );
     return (
-      <div style={{ marginTop: "160px", marginLeft: "20px" }}>
+      <>
+        <UserHeader />
         {/* Page content */}
-        <Container className="mt--7" fluid>
+        <Container className="mt--8" fluid>
           <Row>
-          <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
+            <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
               <Card className="card-profile shadow">
                 <Row className="justify-content-center">
                   <Col className="order-lg-2" lg="3" />
@@ -200,184 +185,227 @@ class NewSacco extends React.Component {
                   style={{ background: '#e4f0f7' }}
                   className="pt-0 pt-md-4"
                 >
-                <ImageUpload />
-                  <Row>
+                  <Image />
+                  {/* <div>
+                    <div className="buttons">{content()}</div>
+                  </div> */}
+                  {/* <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                         <div>
-                          <span className="heading">{` star`}</span>
+                          <span className="heading">{`${ratings} star`}</span>
                           <span className="description">Rider's Rating</span>
                         </div>
                       </div>
                     </div>
-                  </Row>
-                  <div className="text-center">
+                  </Row> */}
+                  {/* <div className="text-center">
                     <h3></h3>
                     <h3 style={{ background: '#cee0eb', borderRadius: '10px' }}>
-                      
+                      {btn_name}
                     </h3>
                     <div className="h5 font-weight-300">
                       <i className="ni location_pin mr-2" />
-                    
+                      {riderBase}, {riderResidence}
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni business_briefcase-24 mr-2" />
-                      Insurance Number: 
+                      Insurance Number: {insuranceNumber}
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni business_briefcase-24 mr-2" />
-                      Number Plate: 
+                      Number Plate: {numberPlate}
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni education_hat mr-2" />
-                      License Number: 
+                      License Number: {drivingLicense}
                     </div>
                     <hr className="my-4" />
-                    <p>{`Insurance number  expires in 
+                    <p>{`Insurance number  expires in ${moment(
+                      insuranceExpDate
                     ).format('MM-DD-YYYY')}`}</p>
-                  </div>
+                  </div> */}
                 </CardBody>
               </Card>
             </Col>
             <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
+                <CardHeader className="bg-white border-0">
+                  {/* <Link to="/admin/logs">
+                    <Button color="success">Logs</Button>
+                  </Link> */}
+                  <Row className="align-items-center">
+                    <Col xs="8">
+                      <h3 className="mb-0">Details</h3>
+                    </Col>
+
+                    <Col className="text-right" xs="4">
+                      <Button
+                        color={btn_class}
+                        href="#pablo"
+                        onClick={this.onDeactivate.bind(this)}
+                        size="lg"
+                      >
+                        {btn_name}
+                      </Button>
+                    </Col>
+                  </Row>
+                </CardHeader>
                 <CardBody>
                   <Form>
                     <h6 className="heading-small text-muted mb-4">
-                      User information
+                      Rider Information
                     </h6>
                     <div className="pl-lg-4">
-                    <Row>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-username"
-                            >
-                              First Name
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              name="name"
-                              onChange={this.handleChange}
-                              value={name}
-                              placeholder="First Name"
-                              type="text"
-                            />
-                            {formErrors.saccoName.length > 0 && (
-                              <span style={{ color: "red", fontSize: 15 }}>
-                                {formErrors.saccoName}
-                              </span>
-                            )}
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-username"
-                            >
-                              Last Name
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              name="name"
-                              onChange={this.handleChange}
-                              value={name}
-                              placeholder="Last Name"
-                              type="text"
-                            />
-                            {formErrors.saccoName.length > 0 && (
-                              <span style={{ color: "red", fontSize: 15 }}>
-                                {formErrors.saccoName}
-                              </span>
-                            )}
-                          </FormGroup>
-                        </Col>
-                      </Row>
                       <Row>
-                        <Col lg="6">
+                        <Col lg="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-username"
                             >
-                              Sacco Name
+                              First Name:
                             </label>
                             <Input
                               className="form-control-alternative"
-                              name="name"
+                              value={riderFname}
                               onChange={this.handleChange}
-                              value={name}
+                              name="riderFname"
                               placeholder="Sacco Name"
                               type="text"
                             />
-                            {formErrors.saccoName.length > 0 && (
-                              <span style={{ color: "red", fontSize: 15 }}>
-                                {formErrors.saccoName}
-                              </span>
-                            )}
                           </FormGroup>
                         </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-username"
+                            >
+                              Surname:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={riderSurName}
+                              onChange={this.handleChange}
+                              name="riderSurName"
+                              placeholder="Sacco Name"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-username"
+                            >
+                              Last Name:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={riderLname}
+                              onChange={this.handleChange}
+                              name="riderLname"
+                              placeholder="Sacco Name"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              Email address
+                              Telephone Number:
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              name="email"
+                              value={riderTelNumber}
+                              name="riderTelNumber"
                               onChange={this.handleChange}
-                              value={email}
-                              placeholder="Enter email"
+                              className="form-control-alternative"
+                              id="input-email"
+                              placeholder="Enter telephone number"
                               type="email"
                             />
-                            {formErrors.email.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeight: "bold"
-                                }}
-                              >
-                                {formErrors.email}
-                              </span>
-                            )}
+                          </FormGroup>
+                        </Col>
+
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-email"
+                            >
+                              Passport/ID Number:
+                            </label>
+                            <Input
+                              value={riderID}
+                              name="riderID"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              id="input-email"
+                              placeholder="Enter ID number"
+                              type="email"
+                            />
                           </FormGroup>
                         </Col>
                       </Row>
                       <Row>
-                        <Col lg="6">
+                        <Col lg="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Registration Number
+                              Driving License:
                             </label>
                             <Input
                               className="form-control-alternative"
-                              name="registration_number"
+                              value={drivingLicense}
+                              name="drivingLicense"
                               onChange={this.handleChange}
-                              value={registration_number.toUpperCase()}
-                              placeholder="Registration Number"
+                              placeholder="Enter License number"
                               type="text"
                             />
-                            {formErrors.registrationNumber.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  fontStyle: "italic"
-                                }}
-                              >
-                                {formErrors.saccoName}
-                              </span>
-                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Issue Date:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={moment(DLIssueDate).format('MM-DD-YYYY')}
+                              name="DLIssueDate"
+                              onChange={this.handleChange}
+                              placeholder="Issue date"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Exp Date:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={moment(DLExpDate).format('MM-DD-YYYY')}
+                              name="DLExpDate"
+                              onChange={this.handleChange}
+                              placeholder="Exp date"
+                              type="text"
+                            />
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -386,27 +414,34 @@ class NewSacco extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Year Founded
+                              Area of Residence:
                             </label>
                             <Input
-                              name="date_founded"
-                              onChange={this.handleChange}
-                              value={date_founded}
                               className="form-control-alternative"
-                              placeholder="Year founded"
+                              value={riderResidence}
+                              name="riderResidence"
+                              onChange={this.handleChange}
+                              placeholder="Area of Residence"
                               type="text"
                             />
-                            {formErrors.year.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontStyle: " italic"
-                                }}
-                              >
-                                {formErrors.year}
-                              </span>
-                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-last-name"
+                            >
+                              Operating Base:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={riderBase}
+                              name="riderBase"
+                              onChange={this.handleChange}
+                              placeholder="Base"
+                              type="text"
+                            />
                           </FormGroup>
                         </Col>
                       </Row>
@@ -414,38 +449,44 @@ class NewSacco extends React.Component {
                     <hr className="my-4" />
                     {/* Address */}
                     <h6 className="heading-small text-muted mb-4">
-                      Contact information
+                      MotorBike Owner Details
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col md="12">
+                        <Col md="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-address"
                             >
-                              Address
+                              First Name:
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              name="address"
+                              value={bikeOwnerFname}
+                              name="bikeOwnerFname"
                               onChange={this.handleChange}
-                              value={address}
-                              placeholder="Enter Address"
-                              type="number"
+                              className="form-control-alternative"
+                              placeholder="Enter first name"
+                              type="text"
                             />
-                            {formErrors.address.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeigth: "bold",
-                                  fontStyle: "italic"
-                                }}
-                              >
-                                {formErrors.address}
-                              </span>
-                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col md="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              Last Name:
+                            </label>
+                            <Input
+                              value={bikeOwnerLname}
+                              name="bikeOwnerLname"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              placeholder="Enter last name"
+                              type="text"
+                            />
                           </FormGroup>
                         </Col>
                       </Row>
@@ -456,171 +497,183 @@ class NewSacco extends React.Component {
                               className="form-control-label"
                               htmlFor="input-city"
                             >
-                              Phone
+                              Phone:
                             </label>
                             <Input
                               className="form-control-alternative"
-                              name="telephone_number"
+                              value={bikeOwnerTelNumber}
+                              name="bikeOwnerTelNumber"
                               onChange={this.handleChange}
-                              value={telephone_number}
                               placeholder="Enter Phone Number"
-                              type="number"
-                            />
-                            {formErrors.phone.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontStyle: "italic",
-                                  fontWeight: "bold"
-                                }}
-                              >
-                                {formErrors.phone}
-                              </span>
-                            )}
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
-                              Postal Code
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              name="postal_code"
-                              onChange={this.handleChange}
-                              value={postal_code}
-                              placeholder="Postal code"
-                              type="number"
-                            />
-                            {formErrors.postal_code.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  fontStyle: "italic"
-                                }}
-                              >
-                                {formErrors.postal_code}
-                              </span>
-                            )}
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
-                              Website link
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              name="website"
-                              onChange={this.handleChange}
-                              value={website}
-                              placeholder="website"
                               type="text"
                             />
-                            {formErrors.website.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  fontStyle: "italic"
-                                }}
-                              >
-                                {formErrors.website}
-                              </span>
-                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-country"
+                            >
+                              Passport/ID:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={bikeOwnerID}
+                              name="bikeOwnerID"
+                              onChange={this.handleChange}
+                              placeholder="passport/ID"
+                              type="number"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-country"
+                            >
+                              Area of Residence:
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              value={bikeOwnerResidence}
+                              name="bikeOwnerResidence"
+                              onChange={this.handleChange}
+                              placeholder="Enter area of residence"
+                              type="text"
+                            />
                           </FormGroup>
                         </Col>
                       </Row>
+                    </div>
+                    <hr className="my-4" />
+
+                    <h6 className="heading-small text-muted mb-4">
+                      MotorBike Details
+                    </h6>
+                    <div className="pl-lg-4">
                       <Row>
-                        <Col lg="6">
+                        <Col md="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
+                              htmlFor="input-address"
                             >
-                              Create Password
+                              Brand:
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              name="password"
+                              value={motorBikeBrand}
+                              name="motorBikeBrand"
                               onChange={this.handleChange}
-                              value={password}
-                              type="password"
+                              className="form-control-alternative"
+                              placeholder="eg Boxer"
+                              type="text"
                             />
-                            {formErrors.password.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  fontStyle: "italic"
-                                }}
-                              >
-                                {formErrors.password}
-                              </span>
-                            )}
                           </FormGroup>
                         </Col>
-                        <Col lg="6">
+                        <Col md="4">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
+                              htmlFor="input-address"
                             >
-                              Confirm Password
+                              Make:
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              name="confirmPassword"
+                              value={motorBikeMake}
+                              name="motorBikeMake"
                               onChange={this.handleChange}
-                              value={confirmPassword}
-                              type="password"
+                              className="form-control-alternative"
+                              placeholder="eg BM-100"
+                              type="text"
                             />
-                            {formErrors.confirmpassword.length > 0 && (
-                              <span
-                                style={{
-                                  color: "red",
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  fontStyle: "italic"
-                                }}
-                              >
-                                {formErrors.confirmpassword}
-                              </span>
-                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col md="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              Number Plate:
+                            </label>
+                            <Input
+                              value={numberPlate}
+                              name="numberPlate"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              placeholder="Enter plate number"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col md="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              Insurance Number:
+                            </label>
+                            <Input
+                              value={insuranceNumber}
+                              name="insuranceNumber"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              placeholder="Enter insurance nunber "
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col md="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              Issue Date:
+                            </label>
+                            <Input
+                              value={moment(insuranceIssueDate).format(
+                                'MM-DD-YYYY'
+                              )}
+                              name="insuranceIssueDate"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              placeholder="Issue Date"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col md="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address"
+                            >
+                              Exp Date:
+                            </label>
+                            <Input
+                              value={moment(insuranceExpDate).format(
+                                'MM-DD-YYYY'
+                              )}
+                              name="insuranceExpDate"
+                              onChange={this.handleChange}
+                              className="form-control-alternative"
+                              placeholder="Exp Date "
+                              type="text"
+                            />
                           </FormGroup>
                         </Col>
                       </Row>
                     </div>
                     <hr className="my-4" />
                     {/* Description */}
-                    <h6 className="heading-small text-muted mb-4">About</h6>
                     <div className="pl-lg-4">
-                      <FormGroup>
-                        <label>Description</label>
-                        <Input
-                          name="description"
-                          onChange={this.handleChange}
-                          value={description}
-                          className="form-control-alternative"
-                          placeholder="A few words about you..."
-                          rows="4"
-                          type="textarea"
-                        />
-                      </FormGroup>
                       <Button
                         color="info"
-                        type="button"
+                        diabled="true "
                         onClick={this.handleSubmit}
                       >
                         Save
@@ -632,9 +685,9 @@ class NewSacco extends React.Component {
             </Col>
           </Row>
         </Container>
-      </div>
+      </>
     );
   }
 }
 
-export default NewSacco;
+export default Profile;

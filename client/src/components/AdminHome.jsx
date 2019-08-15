@@ -3,6 +3,7 @@ import Picker from "./DatePicker.jsx";
 import { MDBCol, MDBIcon } from "mdbreact";
 import queryString from "query-string";
 import { withRouter } from "react-router";
+import {url} from 'domain.js'
 
 import AdminTable from "./AdminTable.jsx";
 
@@ -78,7 +79,7 @@ class TableWhite extends React.Component {
   // get data from the db and loads it to state
   loadData() {
     // axios is so messsy
-    fetch(`/api/saccos`)
+    fetch(`${url}/api/saccos`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
